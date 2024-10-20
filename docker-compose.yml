@@ -1,7 +1,27 @@
 # docker-compose.yml
 version: '3.8'
 services:
-  db:
+  app:
+    build:
+      context: .
+    container_name: agroforestry_vis_app
+    depends_on:
+      - database
+    command: "rails s -p 3000 -b 0.0.0.0"
+    stdin_open: true
+    tty: true
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - bundle_cache:/usr/local/bundle
+    env_file: .env.development
+    environment:
+      DATABASE_HOST: database
+      DATABASE_PORT: 5432
+      RAILS_ENV: development
+
+  database:
     image: postgres:14-alpine
     container_name: database
     volumes:
@@ -11,21 +31,6 @@ services:
       POSTGRES_USER: postgres
     ports:
       - "5432:5432"
-
-  app:
-    build: .
-    container_name: agroforestry_vis_app
-    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
-    volumes:
-      - .:/app
-      - bundle_cache:/usr/local/bundle
-    ports:
-      - "3000:3000"
-    environment:
-      DATABASE_URL: postgres://postgres:password@db:5432/app_development
-      RAILS_ENV: development
-    depends_on:
-      - db
 
 volumes:
   postgres_data:
