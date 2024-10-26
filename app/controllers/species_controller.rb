@@ -64,7 +64,7 @@ class SpeciesController < ApplicationController
     end
 
     # Only allow a list of trusted parameters through.
-    def species_params
-      params.require(:species).permit(:scientific_name)
-    end
+  def species_params
+    params.require(:species).permit(:scientific_name, common_names_attributes: [:common_name])
+  end
 end

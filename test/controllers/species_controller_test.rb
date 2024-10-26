@@ -17,7 +17,10 @@ class SpeciesControllerTest < ActionDispatch::IntegrationTest
 
   test "should create species" do
     assert_difference("Species.count") do
-      post species_index_url, params: { species: { scientific_name: @species.scientific_name } }
+      post species_index_url, params: { species: {
+        scientific_name: @species.scientific_name,
+        common_names_attributes: [{ common_name: "Avocado" }]
+      }}
     end
 
     assert_redirected_to species_url(Species.last)
