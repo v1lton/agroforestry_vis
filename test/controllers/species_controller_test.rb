@@ -2,7 +2,7 @@ require "test_helper"
 
 class SpeciesControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @species = species(:one)
+    @species = species(:avocado)
   end
 
   test "should get index" do

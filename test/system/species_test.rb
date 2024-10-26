@@ -2,7 +2,7 @@ require "application_system_test_case"
 
 class SpeciesTest < ApplicationSystemTestCase
   setup do
-    @species = species(:one)
+    @species = species(:avocado)
   end
 
   test "visiting the index" do

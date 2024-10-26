@@ -10,13 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_20_191352) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_26_151824) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "species", force: :cascade do |t|
-    t.string "scientific_name"
+    t.string "scientific_name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  create_table "species_common_names", force: :cascade do |t|
+    t.string "common_name", null: false
+    t.bigint "species_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["species_id"], name: "index_species_common_names_on_species_id"
+  end
+
+  add_foreign_key "species_common_names", "species"
 end
