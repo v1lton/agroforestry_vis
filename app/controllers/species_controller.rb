@@ -65,6 +65,19 @@ class SpeciesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
   def species_params
-    params.require(:species).permit(:scientific_name, common_names_attributes: [:common_name])
+    params.require(:species).permit(
+      :scientific_name,
+      species_parameters_attributes: [
+        :species_function_id,
+        :layer,
+        :first_crop_time,
+        :productive_life,
+        :max_height,
+        :spacing,
+        :accepts_pruning,
+        :fertility_requirement,
+        :water_requirement
+      ]
+    )
   end
 end

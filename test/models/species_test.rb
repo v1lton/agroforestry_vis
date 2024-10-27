@@ -1,43 +1,111 @@
 require "test_helper"
 
 class SpeciesTest < ActiveSupport::TestCase
+  setup do
+    @cashew_species = species(:cashew)
+  end
+
   test "scientific name can't be empty" do
-    species = Species.new
-    species.common_names.build(common_name: "Cashew")
+    @cashew_species.scientific_name = nil
 
-    assert_not species.valid?
-    assert_equal "Scientific name can't be blank", species.errors.full_messages.to_sentence
+    assert_not  @cashew_species.valid?
+    assert_equal "Scientific name can't be blank",  @cashew_species.errors.full_messages.to_sentence
   end
 
-  test "must have at least one common name" do
-    species = Species.new(scientific_name: "Mangifera indica")
+  test "common names can't be blank" do
+    @cashew_species.common_names.destroy_all
 
-    assert_not species.valid?
-    assert_equal "Common names can't be blank. At least one should be added", species.errors.full_messages.to_sentence
+    assert_not @cashew_species.valid?
+    assert_equal "Common names can't be blank", @cashew_species.errors.full_messages.to_sentence
   end
 
-  test "species is valid with a scientific name and one common name" do
-    species = Species.new(scientific_name: "Mangifera indica")
-    species.common_names.build(common_name: "Mango")
+  test "should allow multiple common names" do
+    assert_equal 1, @cashew_species.common_names.count
 
-    assert species.valid?
+    @cashew_species.common_names.create!(common_name: "Caju")
+    assert @cashew_species.valid?
+    assert_equal 2, @cashew_species.common_names.count
   end
 
-  test "species is invalid if common names are removed" do
-    species = Species.new(scientific_name: "Mangifera indica")
-    species.common_names.build(common_name: "Mango")
+  test "parameter can't be blank" do
+    @cashew_species.functions.destroy_all
 
-    species.common_names.destroy_all
-
-    assert_not species.valid?
-    assert_equal "Common names can't be blank. At least one should be added", species.errors.full_messages.to_sentence
+    assert_not @cashew_species.valid?
+    assert_equal "Parameters can't be blank", @cashew_species.errors.full_messages.to_sentence
   end
 
-  test "species should allow multiple common names" do
-    species = Species.new(scientific_name: "Mangifera indica")
-    species.common_names.build(common_name: "Mango")
-    species.common_names.build(common_name: "Mangga")
+  test "should allow multiple parameters for different functions" do
+    assert_difference -> { @cashew_species.parameters.count } do
+      new_function = species_functions(:forage)
+      @cashew_species.parameters.create!(
+        species_function: new_function,
+        layer: :canopy,
+        first_crop_time: 3.0,
+        productive_life: 25.0,
+        max_height: 8.0,
+        spacing: 6.0,
+        accepts_pruning: true,
+        fertility_requirement: :moderate,
+        water_requirement: :moderate
+      )
+    end
 
-    assert species.valid?
+    assert @cashew_species.valid?
+  end
+
+  test "should not allow duplicate functions" do
+    existing_function = @cashew_species.parameters.first.species_function
+    new_parameter = @cashew_species.parameters.build(
+      species_function: existing_function,
+      layer: :canopy,
+      first_crop_time: 3.0,
+      productive_life: 25.0,
+      max_height: 8.0,
+      spacing: 6.0,
+      accepts_pruning: true,
+      fertility_requirement: :moderate,
+      water_requirement: :moderate
+    )
+
+    assert_not @cashew_species.valid?
+    assert_includes @cashew_species.errors.full_messages.to_sentence, "Cannot have multiple parameter sets for the same function"
+  end
+
+  test "should destroy dependent parameters when species is destroyed" do
+    parameters_count = @cashew_species.parameters.count
+    assert_difference -> { SpeciesParameter.count }, -parameters_count do
+      @cashew_species.destroy
+    end
+  end
+
+  test "should destroy dependent common names when species is destroyed" do
+    common_names_count = @cashew_species.common_names.count
+    assert_difference -> { SpeciesCommonName.count }, -common_names_count do
+      @cashew_species.destroy
+    end
+  end
+
+  test "accepts nested attributes for parameters" do
+    new_species = Species.new(
+      scientific_name: "Mangifera indica",
+      common_names_attributes: [
+        { common_name: "Mango" }
+      ],
+      parameters_attributes: [
+        {
+          species_function_id: species_functions(:fruit).id,
+          layer: :canopy,
+          first_crop_time: 5.0,
+          productive_life: 50.0,
+          max_height: 12.0,
+          spacing: 10.0,
+          accepts_pruning: true,
+          fertility_requirement: :moderate,
+          water_requirement: :moderate
+        }
+      ]
+    )
+
+    assert new_species.valid?
   end
 end
