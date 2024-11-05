@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @species_function %>
+
+<div>
+  <%= link_to "Edit this species function", edit_species_function_path(@species_function) %> |
+  <%= link_to "Back to species functions", species_functions_path %>
+
+  <%= button_to "Destroy this species function", @species_function, method: :delete %>
+</div>

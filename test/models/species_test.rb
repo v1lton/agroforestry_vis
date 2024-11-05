@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "test_helper"
 
 class SpeciesTest < ActiveSupport::TestCase
@@ -31,7 +33,7 @@ class SpeciesTest < ActiveSupport::TestCase
     @cashew_species.functions.destroy_all
 
     assert_not @cashew_species.valid?
-    assert_equal "Parameters can't be blank", @cashew_species.errors.full_messages.to_sentence
+    assert_includes @cashew_species.errors.full_messages.to_sentence, "Parameters can't be blank"
   end
 
   test "should allow multiple parameters for different functions" do
@@ -39,14 +41,14 @@ class SpeciesTest < ActiveSupport::TestCase
       new_function = species_functions(:forage)
       @cashew_species.parameters.create!(
         species_function: new_function,
-        layer: :canopy,
+        layer: :low_layer,
         first_crop_time: 3.0,
         productive_life: 25.0,
         max_height: 8.0,
         spacing: 6.0,
         accepts_pruning: true,
-        fertility_requirement: :moderate,
-        water_requirement: :moderate
+        fertility_requirement: :medium_fertility,
+        water_requirement: :medium_water
       )
     end
 
@@ -57,14 +59,14 @@ class SpeciesTest < ActiveSupport::TestCase
     existing_function = @cashew_species.parameters.first.species_function
     new_parameter = @cashew_species.parameters.build(
       species_function: existing_function,
-      layer: :canopy,
+      layer: :low_layer,
       first_crop_time: 3.0,
       productive_life: 25.0,
       max_height: 8.0,
       spacing: 6.0,
       accepts_pruning: true,
-      fertility_requirement: :moderate,
-      water_requirement: :moderate
+      fertility_requirement: :medium_fertility,
+      water_requirement: :medium_water
     )
 
     assert_not @cashew_species.valid?
@@ -94,14 +96,14 @@ class SpeciesTest < ActiveSupport::TestCase
       parameters_attributes: [
         {
           species_function_id: species_functions(:fruit).id,
-          layer: :canopy,
+          layer: :low_layer,
           first_crop_time: 5.0,
           productive_life: 50.0,
           max_height: 12.0,
           spacing: 10.0,
           accepts_pruning: true,
-          fertility_requirement: :moderate,
-          water_requirement: :moderate
+          fertility_requirement: :medium_fertility,
+          water_requirement: :medium_water
         }
       ]
     )

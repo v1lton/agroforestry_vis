@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SpeciesController < ApplicationController
   before_action :set_species, only: %i[ show edit update destroy ]
 
@@ -13,6 +15,8 @@ class SpeciesController < ApplicationController
   # GET /species/new
   def new
     @species = Species.new
+    @species.common_names.build
+    @species.parameters.build
   end
 
   # GET /species/1/edit
@@ -22,6 +26,7 @@ class SpeciesController < ApplicationController
   # POST /species or /species.json
   def create
     @species = Species.new(species_params)
+    puts("AQUI! - #{species_params}")
 
     respond_to do |format|
       if @species.save
@@ -67,7 +72,8 @@ class SpeciesController < ApplicationController
   def species_params
     params.require(:species).permit(
       :scientific_name,
-      species_parameters_attributes: [
+      common_names_attributes: [:common_name],
+      parameters_attributes: [
         :species_function_id,
         :layer,
         :first_crop_time,

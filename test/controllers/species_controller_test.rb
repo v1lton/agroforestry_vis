@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 require "test_helper"
 
 class SpeciesControllerTest < ActionDispatch::IntegrationTest
   setup do
     @species = species(:avocado)
+    @fruit_function = species_functions(:fruit)
   end
 
   test "should get index" do
@@ -20,18 +23,17 @@ class SpeciesControllerTest < ActionDispatch::IntegrationTest
       post species_index_url, params: { species: {
         scientific_name: "Persea americana",
         common_names_attributes: [{ common_name: "Avocado" }],
-        functions_attributes: [
+        parameters_attributes: [
           {
-            species_parameter_attributes: {
-              layer: 1,
-              first_crop_time: 1.5,
-              productive_life: 1.5,
-              max_height: 1.5,
-              spacing: 1.5,
-              accepts_pruning: false,
-              fertility_requirement: 1,
-              water_requirement: 1
-            }
+            species_function_id: @fruit_function.id,
+            layer: "low_layer",
+            first_crop_time: 1.5,
+            productive_life: 1.5,
+            max_height: 1.5,
+            spacing: 1.5,
+            accepts_pruning: false,
+            fertility_requirement: :high_fertility,
+            water_requirement: :high_water
           }
         ]
       }}

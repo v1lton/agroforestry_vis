@@ -1,0 +1,12 @@
+<% content_for :title, "Editing species function" %>
+
+<h1>Editing species</h1>
+
+<%= render "form", species_function: @species_function %>
+
+<br>
+
+<div>
+  <%= link_to "Show this species function", @species_function %> |
+  <%= link_to "Back to species functions", species_functions_path %>
+</div>

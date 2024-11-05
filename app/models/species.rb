@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Species < ApplicationRecord
   has_many :common_names, class_name: "SpeciesCommonName", inverse_of: :species, dependent: :destroy
   has_many :parameters, class_name: "SpeciesParameter", inverse_of: :species, dependent: :destroy
