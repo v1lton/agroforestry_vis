@@ -25,6 +25,7 @@
 
   <%= form.fields_for :parameters do |parameter_form| %>
     <div>
+      <%= parameter_form.label :species_function %>
       <%= parameter_form.collection_select(:species_function_id, SpeciesFunction.all, :id, :name) %>
     </div>
 

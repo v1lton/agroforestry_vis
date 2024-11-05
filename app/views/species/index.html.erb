@@ -6,7 +6,7 @@
 
 <div id="species">
   <% @species.each do |species| %>
-    <%= render species %>
+    <strong><%= species.scientific_name %></strong>
     <p>
       <%= link_to "Show this species", species %>
     </p>
