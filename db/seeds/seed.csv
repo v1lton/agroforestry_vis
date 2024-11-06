@@ -1,0 +1,20 @@
+common_name,scientific_name,layer,first_crop_time,productive_life,max_height,spacing,accepts_pruning,function,fertility_requirement,water_requirement
+Abacate,Persea americana,alto,6,50,20,10,Sim,Frutífera,alta,alta
+Acerola,Malpighia glabra L.,alto,3,15,5,4,Sim,Frutífera,média,média
+Manga,Mangifera indica,alto,3,50,20,10,Sim,Frutífera,média,média
+Mangaba,Harconia speciosa,alto,6,50,7,5,Sim,Frutífera,baixa,baixa
+Buriti,Mauritia flexuosa,alto,10,50,20,10,Não,Frutífera,média,média
+Jenipapo,Genipa americana,alto,5,50,24,10,Não,Frutífera,média,média
+Cacau,Theobroma cacao,baixo,3,50,10,3,Sim,Frutífera,alta,alta
+Araucária,Araucaria angustifolia,emergente,15,50,35,10,Sim,Frutífera,baixa,média
+Fruta pão,Artocarpus altilis,emergente,5,50,20,10,Sim,Frutífera,baixa,alta
+Cajá,Spondias mombin,emergente,5,50,30,10,Sim,Frutífera,média,média
+Caju,Anacardium occidentale,emergente,2,50,12,8,Não,Frutífera,baixa,baixa
+Pitanga,Eugenia uniflora,médio,3,50,15,5,Não,Frutífera,média,média
+Araçá,Psidium guineense,médio,3,30,6,5,Sim,Frutífera,baixa,baixa
+Café,Coffea arabica,baixo,2,50,5,1,Sim,Frutífera,alta,alta
+Abacaxi,Ananas comosus,baixo,"1,5",3,"1,2","0,4",Não,Frutífera,baixa,baixa
+Limão cravo,Citrus limonia,baixo,3,10,6,"2,5",Sim,Frutífera,,
+Cabeludinha,Myrciaria glazioviana,baixo,6,30,4,4,Sim,Frutífera,média,média
+Bacupari miúdo,Garcinia brasiliensis,baixo,10,30,4,"2,5",Sim,Frutífera,baixa,baixa
+Jabuticaba,Plinia peruviana,baixo,8,50,15,6,Sim,Frutífera,média,média
