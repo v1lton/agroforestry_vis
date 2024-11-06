@@ -1,0 +1,7 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+avocado:
+  scientific_name: Persea americana
+
+cashew:
+  scientific_name: Spondias mombin

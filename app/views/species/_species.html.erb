@@ -1,0 +1,60 @@
+<div id="<%= dom_id species %>">
+  <p>
+    <strong>Nome científico:</strong>
+    <%= species.scientific_name %>
+  </p>
+
+  <p>
+    <strong>Nome comum: </strong>
+      <% species.common_names.each do |common_name| %>
+        <%= common_name.common_name %>
+      <% end %>
+  </p>
+
+  <% species.parameters.each do |parameter| %>
+    <p>
+      <strong>Função:</strong>
+      <%= parameter.species_function.name %>
+    </p>
+
+    <p>
+      <strong>Estrato:</strong>
+      <%= parameter.layer %>
+    </p>
+
+    <p>
+      <strong>Primeira colheita (anos):</strong>
+      <%= parameter.first_crop_time %>
+    </p>
+
+    <p>
+      <strong>Vida produtiva (anos):</strong>
+      <%= parameter.productive_life %>
+    </p>
+
+    <p>
+      <strong>Altura máxima (metros):</strong>
+      <%= parameter.max_height %>
+    </p>
+
+    <p>
+      <strong>Espaçamento (metros):</strong>
+      <%= parameter.spacing %>
+    </p>
+
+    <p>
+      <strong>Necessidade de água:</strong>
+      <%= parameter.water_requirement %>
+    </p>
+
+    <p>
+      <strong>Necessidade de fertilidade:</strong>
+      <%= parameter.fertility_requirement %>
+    </p>
+
+    <p>
+      <strong>Aceita poda:</strong>
+      <%= parameter.accepts_pruning ? "Sim" : "Não" %>
+    </p>
+  <% end %>
+</div>
