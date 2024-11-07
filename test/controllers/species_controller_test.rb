@@ -21,19 +21,19 @@ class SpeciesControllerTest < ActionDispatch::IntegrationTest
   test "should create species" do
     assert_difference("Species.count") do
       post species_index_url, params: { species: {
-        scientific_name: "Persea americana",
-        common_names_attributes: [{ common_name: "Avocado" }],
+        scientific_name: "Malpihia glabra L.",
+        common_names_attributes: [{ common_name: "Acerola" }],
         parameters_attributes: [
           {
             species_function_id: @fruit_function.id,
-            layer: "low_layer",
-            first_crop_time: 1.5,
-            productive_life: 1.5,
-            max_height: 1.5,
-            spacing: 1.5,
-            accepts_pruning: false,
-            fertility_requirement: :high_fertility,
-            water_requirement: :high_water
+            layer: :high_layer,
+            first_crop_time: 3,
+            productive_life: 15,
+            max_height: 5,
+            spacing: 4,
+            accepts_pruning: true,
+            fertility_requirement: :medium_fertility,
+            water_requirement: :medium_water
           }
         ]
       }}

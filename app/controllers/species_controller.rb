@@ -26,7 +26,6 @@ class SpeciesController < ApplicationController
   # POST /species or /species.json
   def create
     @species = Species.new(species_params)
-    puts("AQUI! - #{species_params}")
 
     respond_to do |format|
       if @species.save
