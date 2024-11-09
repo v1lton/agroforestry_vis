@@ -5,6 +5,8 @@ Rails.application.routes.draw do
 
   resources :species
 
+  get "species_functions/timeline", to: "species_functions#timeline"
+
   resources :species_functions, path: "functions"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

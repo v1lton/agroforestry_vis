@@ -1,0 +1,17 @@
+<h1>Species Timeline</h1>
+
+<div data-controller="timeline">
+  <div>
+    <label for="function-select">Select Function:</label>
+    <select id="function-select" data-action="change->timeline#functionChanged" data-timeline-target="functionSelect">
+      <option value="">Select a function</option>
+      <% @species_functions.each do |function| %>
+        <option value="<%= function.id %>" <%= 'selected' if function == @selected_function %>><%= function.name %></option>
+      <% end %>
+    </select>
+  </div>
+
+  <svg id="timeline-svg" width="800" height="600" data-timeline-target="svg"></svg>
+</div>
+
+<%#= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>

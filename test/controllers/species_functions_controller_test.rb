@@ -7,6 +7,10 @@ class SpeciesFunctionsControllerTest < ActionDispatch::IntegrationTest
     @fruit_function = species_functions(:fruit)
   end
 
+  test "timeline" do
+    get species_functions_timeline_path, params: {species_function_id: @fruit_function.id}, as: :json
+  end
+
   test "should get index" do
     get species_functions_path
     assert_response :success

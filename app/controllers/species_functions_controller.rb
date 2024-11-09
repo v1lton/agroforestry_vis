@@ -3,6 +3,27 @@
 class SpeciesFunctionsController < ApplicationController
   before_action :set_species_function, only: %i[ show edit update destroy ]
 
+  # GET /species_functions/timeline
+  def timeline
+    @species_functions = SpeciesFunction.order(:name)
+    @species_parameters = []
+    if params[:species_function_id].present?
+      @selected_function = SpeciesFunction.find(params[:species_function_id])
+      @species_parameters = SpeciesParameter.includes(:species)
+                                            .select('species_parameters.*, species.scientific_name as species_scientific_name')
+                                            .joins(:species)
+                                            .where(species_function: @selected_function)
+    end
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @species_parameters.as_json(
+        only: [:first_crop_time, :productive_life, :species_scientific_name],
+      )
+      }
+    end
+  end
+
   # GET /functions
   def index
     @species_functions = SpeciesFunction.all
