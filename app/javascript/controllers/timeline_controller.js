@@ -1,94 +1,151 @@
+// timeline_controller.js
 import { Controller } from "@hotwired/stimulus"
-// import * as d3 from "d3"
-import { select } from "d3"
 
 export default class extends Controller {
-  static targets = ["functionSelect", "svg"]
+  static targets = ["svg", "functionSelect"]
 
   connect() {
-    console.log(select)
-    // this.svg = d3.select(this.svgTarget)
-    // this.width = +this.svg.attr("width")
-    // this.height = +this.svg.attr("height")
-    // this.margin = { top: 20, right: 20, bottom: 30, left: 150 }
-    // this.innerWidth = this.width - this.margin.left - this.margin.right
-    // this.innerHeight = this.height - this.margin.top - this.margin.bottom
-    //
-    // // Create a group element to hold the chart elements
-    // this.chartGroup = this.svg.append("g")
-    //   .attr("transform", `translate(${this.margin.left},${this.margin.top})`)
-    //
-    // // Initialize scales and axes
-    // this.xScale = d3.scaleLinear()
-    //   .range([0, this.innerWidth])
-    //
-    // this.yScale = d3.scaleBand()
-    //   .range([0, this.innerHeight])
-    //   .padding(0.1)
-    //
-    // this.xAxisGroup = this.chartGroup.append("g")
-    //   .attr("transform", `translate(0,${this.innerHeight})`)
-    //
-    // this.yAxisGroup = this.chartGroup.append("g")
-  }
+    // Initialize the SVG container with some basic styling
+    this.svg = d3.select(this.svgTarget)
+    this.margin = { top: 50, right: 50, bottom: 50, left: 200 }
+    this.width = this.svgTarget.clientWidth - this.margin.left - this.margin.right
+    this.height = this.svgTarget.clientHeight - this.margin.top - this.margin.bottom
 
-  functionChanged() {
-    const functionId = this.functionSelectTarget.value
-    if (functionId) {
-      d3.json(`/species_timeline.json?function_id=${functionId}`)
-        .then(data => {
-          this.updateChart(data)
-        })
-        .catch(error => {
-          console.error('Error fetching data:', error)
-        })
+    // Create the main group element with margins
+    this.g = this.svg.append("g")
+      .attr("transform", `translate(${this.margin.left},${this.margin.top})`)
+
+    // Create scales (will be updated with data)
+    this.xScale = d3.scaleLinear()
+    this.yScale = d3.scaleBand().padding(0.1)
+
+    // Add axes groups
+    this.xAxis = this.g.append("g")
+      .attr("class", "x-axis")
+      .attr("transform", `translate(0,${this.height})`)
+
+    this.yAxis = this.g.append("g")
+      .attr("class", "y-axis")
+
+    // Add labels
+    this.svg.append("text")
+      .attr("class", "x-label")
+      .attr("text-anchor", "middle")
+      .attr("x", this.margin.left + this.width / 2)
+      .attr("y", this.height + this.margin.top + 40)
+      .text("Years")
+
+    // If there's a pre-selected function, load its data
+    if (this.functionSelectTarget.value) {
+      this.loadData()
     } else {
-      // Clear the chart if no function is selected
-      this.chartGroup.selectAll(".bar").remove()
-      this.xAxisGroup.call(d3.axisBottom(this.xScale))
-      this.yAxisGroup.call(d3.axisLeft(this.yScale))
+      this.showEmptyState()
     }
   }
 
-  updateChart(data) {
-    // Process the data
-    data.forEach(d => {
-      d.first_crop_time = +d.first_crop_time || 0
-      d.productive_life = +d.productive_life || 0
-      d.start = d.first_crop_time
-      d.end = d.first_crop_time + d.productive_life
-      d.species_name = d.species_name
-    })
+  async functionChanged() {
+    if (this.functionSelectTarget.value) {
+      await this.loadData()
+    } else {
+      this.showEmptyState()
+    }
+  }
 
-    // Update scales
-    const xMax = d3.max(data, d => d.end) || 0
-    this.xScale.domain([0, xMax])
-    this.yScale.domain(data.map(d => d.species_name))
+  showEmptyState() {
+    // Clear existing elements
+    this.g.selectAll(".timeline-bar").remove()
+
+    // Reset scales
+    this.xScale.domain([0, 10])
+      .range([0, this.width])
+
+    this.yScale.domain([])
+      .range([0, this.height])
 
     // Update axes
-    this.xAxisGroup.call(d3.axisBottom(this.xScale))
-    this.yAxisGroup.call(d3.axisLeft(this.yScale))
+    this.xAxis.call(d3.axisBottom(this.xScale))
+    this.yAxis.call(d3.axisLeft(this.yScale))
 
-    // Bind data to bars
-    const bars = this.chartGroup.selectAll(".bar")
-      .data(data, d => d.species_name)
+    // Add empty state message
+    this.g.append("text")
+      .attr("class", "empty-state")
+      .attr("x", this.width / 2)
+      .attr("y", this.height / 2)
+      .attr("text-anchor", "middle")
+      .attr("fill", "#666")
+      .text("Select a function to view timeline")
+  }
+
+  async loadData() {
+    // Remove empty state message if it exists
+    this.g.selectAll(".empty-state").remove()
+
+    // Fetch data for the selected function
+    const response = await fetch(`/species_functions/timeline.json?species_function_id=${this.functionSelectTarget.value}`)
+    const data = await response.json()
+
+    // Process the data
+    const timelineData = data.map(d => ({
+      species: d.species_scientific_name,
+      start: d.first_crop_time,
+      duration: d.productive_life
+    }))
+
+    // Update scales
+    const maxTime = d3.max(timelineData, d => d.start + d.duration)
+    this.xScale.domain([0, maxTime])
+      .range([0, this.width])
+
+    this.yScale.domain(timelineData.map(d => d.species))
+      .range([0, this.height])
+
+    // Update axes
+    this.xAxis.transition().duration(500)
+      .call(d3.axisBottom(this.xScale))
+
+    this.yAxis.transition().duration(500)
+      .call(d3.axisLeft(this.yScale))
+
+    // Data join for timeline bars
+    const bars = this.g.selectAll(".timeline-bar")
+      .data(timelineData)
 
     // Remove old bars
     bars.exit().remove()
 
-    // Update existing bars
-    bars.attr("x", d => this.xScale(d.start))
-      .attr("width", d => this.xScale(d.end) - this.xScale(d.start))
-      .attr("y", d => this.yScale(d.species_name))
-      .attr("height", this.yScale.bandwidth())
-
     // Add new bars
-    bars.enter().append("rect")
-      .attr("class", "bar")
+    const barsEnter = bars.enter()
+      .append("rect")
+      .attr("class", "timeline-bar")
+
+    // Update all bars
+    bars.merge(barsEnter)
+      .transition()
+      .duration(500)
       .attr("x", d => this.xScale(d.start))
-      .attr("width", d => this.xScale(d.end) - this.xScale(d.start))
-      .attr("y", d => this.yScale(d.species_name))
+      .attr("y", d => this.yScale(d.species))
+      .attr("width", d => this.xScale(d.duration) - this.xScale(0))
       .attr("height", this.yScale.bandwidth())
-      .attr("fill", "steelblue")
+      .attr("fill", "#2196F3")
+      .attr("opacity", 0.7)
+
+    // Add tooltips
+    bars.merge(barsEnter)
+      .on("mouseover", (event, d) => {
+        d3.select(event.currentTarget)
+          .attr("opacity", 1)
+
+        this.g.append("text")
+          .attr("class", "tooltip")
+          .attr("x", this.xScale(d.start + d.duration / 2))
+          .attr("y", this.yScale(d.species) - 5)
+          .attr("text-anchor", "middle")
+          .text(`Start: Year ${d.start}, Duration: ${d.duration} years`)
+      })
+      .on("mouseout", (event) => {
+        d3.select(event.currentTarget)
+          .attr("opacity", 0.7)
+        this.g.selectAll(".tooltip").remove()
+      })
   }
 }
