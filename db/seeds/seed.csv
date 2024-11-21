@@ -1,20 +1,103 @@
-common_name,scientific_name,layer,first_crop_time,productive_life,max_height,spacing,accepts_pruning,function,fertility_requirement,water_requirement
-Abacate,Persea americana,alto,6,50,20,10,Sim,Frutífera,alta,alta
-Acerola,Malpighia glabra L.,alto,3,15,5,4,Sim,Frutífera,média,média
-Manga,Mangifera indica,alto,3,50,20,10,Sim,Frutífera,média,média
-Mangaba,Harconia speciosa,alto,6,50,7,5,Sim,Frutífera,baixa,baixa
-Buriti,Mauritia flexuosa,alto,10,50,20,10,Não,Frutífera,média,média
-Jenipapo,Genipa americana,alto,5,50,24,10,Não,Frutífera,média,média
-Cacau,Theobroma cacao,baixo,3,50,10,3,Sim,Frutífera,alta,alta
-Araucária,Araucaria angustifolia,emergente,15,50,35,10,Sim,Frutífera,baixa,média
-Fruta pão,Artocarpus altilis,emergente,5,50,20,10,Sim,Frutífera,baixa,alta
-Cajá,Spondias mombin,emergente,5,50,30,10,Sim,Frutífera,média,média
-Caju,Anacardium occidentale,emergente,2,50,12,8,Não,Frutífera,baixa,baixa
-Pitanga,Eugenia uniflora,médio,3,50,15,5,Não,Frutífera,média,média
-Araçá,Psidium guineense,médio,3,30,6,5,Sim,Frutífera,baixa,baixa
-Café,Coffea arabica,baixo,2,50,5,1,Sim,Frutífera,alta,alta
-Abacaxi,Ananas comosus,baixo,"1,5",3,"1,2","0,4",Não,Frutífera,baixa,baixa
-Limão cravo,Citrus limonia,baixo,3,10,6,"2,5",Sim,Frutífera,,
-Cabeludinha,Myrciaria glazioviana,baixo,6,30,4,4,Sim,Frutífera,média,média
-Bacupari miúdo,Garcinia brasiliensis,baixo,10,30,4,"2,5",Sim,Frutífera,baixa,baixa
-Jabuticaba,Plinia peruviana,baixo,8,50,15,6,Sim,Frutífera,média,média
+common_name,scientific_name,layer,start_crop_time,end_crop_time,max_height
+Abacate,Persea americana,alto,6,50,20
+Abiu roxo,Chrysophyllum cainito,alto,15,30,15
+Acerola,Malpighia glabra L.,alto,3,15,5
+Banana roxa,Musa acuminata,alto,2,15,5
+Banana São Tomé,Musa paradisiaca,alto,2,15,7
+Biribá,Annona mucosa,alto,4,15,25
+Buriti,Mauritia flexuosa,alto,10,50,20
+Cagaita,Stenocalyx dysentericus,alto,10,30,10
+Cambucá,Plinia edulis,alto,10,30,10
+Couve-flor,Brassica oleracea var botrytis,alto,"0,25","0,25",
+Cupuaçu,Theobroma grandiflorum,alto,6,30,20
+Erva mate,Ilex paraguariensis,alto,3,30,20
+Graviola,Annona muricata,alto,5,15,8
+Guabiroba,Campomanesia xanthocarpa,alto,10,30,25
+Jambo,Syzygium jambos,alto,7,30,15
+Jenipapo,Genipa americana,alto,5,50,24
+Macadâmia,Macadamia ternifolia,alto,10,30,15
+Manga,Mangifera indica,alto,3,50,20
+Mangaba,Harconia speciosa,alto,6,50,7
+Nespera,Eriobotrya japonica,alto,5,15,10
+Pinha,Annona squamosa,alto,4,15,8
+Pitomba,Talisia esculenta,alto,10,30,10
+Sapoti,Manilkara zapota,alto,10,30,20
+Açaí,Euterpe oleracea,alto,6,30,20
+Babaçu,Attalea speciosa,alto,10,30,30
+Banana da terra,Musa paradisiaca,alto,1,3,5
+Banana nanica,Musa acuminata 'Dwarf Cavendish',alto,"1,5",3,2
+Caqui,Diospyros kaki,alto,3,30,12
+Cereja do Rio Grande,Eugenia aggregata,alto,10,30,15
+Figo,Ficus carica,alto,2,30,10
+Goiaba,Psidium guajava,alto,3,30,10
+Guaraná,Paullinia cupana,alto,6,15,10
+Ingá,Inga fagifolia,alto,3,15,25
+Jaca,Artocarpus heterophyllus,alto,6,30,25
+Jambolão,Syzygium cumini,alto,3,15,25
+Jerivá,Syagrus romanzoffiana,alto,10,30,20
+Juçara,Euterpe edulis,alto,6,30,20
+Lichia,Litchi chinensis,alto,5,30,20
+Maçã,Malus domestica,alto,3,30,10
+Maracujá,Passiflora edulis,alto,"0,5",3,2
+Oliveira,Olea europaea,alto,5,30,15
+Pitaia,Hylocereus undatus,alto,2,15,1
+Pupunha,Bactris gasipaes,alto,5,30,20
+Rambutão,Nephelium lappaceum,alto,6,15,20
+Romã,Punica granatum,alto,5,15,5
+Seringueira,Hevea brasiliensis,alto,10,30,30
+Videira,Vitis,alto,3,30,7
+Abacaxi,Ananas comosus,baixo,"1,5",3,"1,2"
+Bacupari miúdo,Garcinia brasiliensis,baixo,10,30,4
+Batata doce,Ipomoea batatas,baixo,"0,33","0,33",
+Cabeludinha,Myrciaria glazioviana,baixo,6,30,4
+Cacau,Theobroma cacao,baixo,3,50,10
+Café,Coffea arabica,baixo,2,50,5
+Jabuticaba,Plinia peruviana,baixo,8,50,15
+Limão cravo,Citrus limonia,baixo,3,10,5
+Lima da pérsia,Citrus limettioides,baixo,3,15,5
+Limão thaiti,Citrus latifolia,baixo,3,15,5
+Marmelo português,Cydonia oblonga,baixo,5,30,6
+Araucária,Araucaria angustifolia,emergente,15,50,35
+Bacuri,Platonia insignis,emergente,10,30,30
+Cajá,Spondias mombin,emergente,5,50,30
+Caju,Anacardium occidentale,emergente,2,50,12
+Castanha do pará,Bertholletia excelsa,emergente,12,30,45
+Chichá,Sterculia chicha,emergente,6,30,25
+Coco da Bahia,Cocos nucifera,emergente,5,30,30
+Copaíba,Copaifera langsdorffii,emergente,10,30,35
+Fruta pão,Artocarpus altilis,emergente,5,50,20
+Jatobá,Hymenaea courbaril,emergente,10,30,30
+Mamão,Carica papaya,emergente,1,4,9
+Noz pecã,Carya illinoinensis,emergente,10,30,23
+Pequi,Caryocar brasiliense,emergente,6,30,12
+Pera,Pyrus communis,emergente,6,30,12
+Tamarindo,Tamarindus indica,emergente,8,30,25
+Amora,Morus nigra,médio,"1,5",15,9
+Araçá,Psidium guineense,médio,3,30,6
+Cambuci,Campomanesia phaea,médio,10,30,5
+Pitanga,Eugenia uniflora,médio,3,50,15
+Abiu,Pouteria caimito,médio,10,30,10
+Ameixa japonesa,Eriobotrya japonica,médio,3,30,10
+Bacupari-açú,Garcinia gardneriana,médio,10,30,15
+Banana maçã,Musa acuminata,médio,"1,5",30,5
+Banana ouro,Musa acuminata,médio,"1,5",30,5
+Banana pão,Musa acuminata,médio,"1,5",30,5
+Banana prata,Musa sapientum,médio,"1,5",30,5
+Cafenara,Tachia guyanensis,médio,5,15,5
+Canela de cheiro,Cinnamomum Zeylanicum,médio,15,30,15
+Carambola,Averrhoa carambola,médio,3,30,8
+Coité,Crescentia cujete,médio,3,15,15
+Goiaba serrana,Acca sellowiana,médio,6,15,7
+Groselha,Ribes rubrum,médio,6,15,"1,5"
+Grumixama,Eugenia brasiliensis,médio,10,30,15
+Laranja,Citrus sinensis,médio,3,15,10
+Longan,Dimocarpus longan,médio,5,15,15
+Louro,Laurus nobilis,médio,3,20,10
+Mangostão,Garcinia mangostana,médio,15,30,25
+Murici,Byrsonima crassifolia,médio,6,30,6
+Nectarina,Prunus persica,médio,3,15,8
+Pêssego,Prunus persica,médio,3,30,8
+Pitanga,Eugenia uniflora,médio,3,50,15
+Pokãn,Citrus reticulata,médio,3,15,5
+Urucum,Bixa orellana,médio,2,3,6
+Uvaia,Eugenia pyriformis,médio,6,30,15

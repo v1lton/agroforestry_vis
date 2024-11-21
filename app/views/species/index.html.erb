@@ -1,12 +1,15 @@
 <p style="color: green"><%= notice %></p>
 
-<% content_for :title, "Species" %>
+<% content_for :title, "Espécies" %>
 
 <h1>Species</h1>
 
 <div id="species">
+  <p>
+    <h4>Quantidade de espécies cadastadras: <%= Species.all.count %></h4>
+  </p>
   <% @species.each do |species| %>
-    <strong><%= species.scientific_name %></strong>
+    <strong><%= species.common_names.first.common_name %></strong>
     <p>
       <%= link_to "Show this species", species %>
     </p>
