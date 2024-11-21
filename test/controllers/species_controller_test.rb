@@ -4,8 +4,7 @@ require "test_helper"
 
 class SpeciesControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @species = species(:avocado)
-    @fruit_function = species_functions(:fruit)
+    @species = species(:avocado_species)
   end
 
   test "should get index" do
@@ -22,20 +21,11 @@ class SpeciesControllerTest < ActionDispatch::IntegrationTest
     assert_difference("Species.count") do
       post species_index_url, params: { species: {
         scientific_name: "Malpihia glabra L.",
+        layer: :high_layer,
+        start_crop_time: 3,
+        end_crop_time: 15,
+        max_height: 5,
         common_names_attributes: [{ common_name: "Acerola" }],
-        parameters_attributes: [
-          {
-            species_function_id: @fruit_function.id,
-            layer: :high_layer,
-            first_crop_time: 3,
-            productive_life: 15,
-            max_height: 5,
-            spacing: 4,
-            accepts_pruning: true,
-            fertility_requirement: :medium_fertility,
-            water_requirement: :medium_water
-          }
-        ]
       }}
     end
 

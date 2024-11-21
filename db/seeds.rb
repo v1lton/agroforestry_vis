@@ -10,11 +10,11 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-namespace :db do
-  task seed: :environment do
-    Dir[File.join(Rails.root, 'db', 'seeds', '*.rb')].each do |filename|
-      puts "Seeding #{filename}."
-      load(filename)
-    end
-  end
-end
+# namespace :db do
+#   task seed: :environment do
+#     Dir[File.join(Rails.root, 'db', 'seeds', '*.rb')].each do |filename|
+#       puts "Seeding #{filename}."
+#       load(filename)
+#     end
+#   end
+# end

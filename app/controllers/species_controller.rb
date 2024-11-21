@@ -16,7 +16,6 @@ class SpeciesController < ApplicationController
   def new
     @species = Species.new
     @species.common_names.build
-    @species.parameters.build
   end
 
   # GET /species/1/edit
@@ -71,18 +70,11 @@ class SpeciesController < ApplicationController
   def species_params
     params.require(:species).permit(
       :scientific_name,
+      :layer,
+      :start_crop_time,
+      :end_crop_time,
+      :max_height,
       common_names_attributes: [:common_name],
-      parameters_attributes: [
-        :species_function_id,
-        :layer,
-        :first_crop_time,
-        :productive_life,
-        :max_height,
-        :spacing,
-        :accepts_pruning,
-        :fertility_requirement,
-        :water_requirement
-      ]
     )
   end
 end

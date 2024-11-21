@@ -2,8 +2,8 @@ require "test_helper"
 
 class SpeciesCommonNameTest < ActiveSupport::TestCase
   setup do
-    @cashew_species = species(:cashew)
-    @cashew_name = species_common_names(:cashew_name)
+    @avocado_species = species(:avocado_species)
+    @avocado_name= species_common_names(:avocado_name)
   end
 
   test "needs to belong to a species" do
@@ -14,19 +14,19 @@ class SpeciesCommonNameTest < ActiveSupport::TestCase
   end
 
   test "common name is destroyed when deleting a species" do
-    assert_equal @cashew_species, @cashew_name.species
+    assert_equal @avocado_species, @avocado_name.species
 
     assert_difference("SpeciesCommonName.count", -1) do
-      @cashew_species.destroy
+      @avocado_species.destroy
     end
 
-    assert_nil SpeciesCommonName.find_by(id: @cashew_name.id)
+    assert_nil SpeciesCommonName.find_by(id: @avocado_species.id)
   end
 
   test "common_name can't be empty" do
-    cashew_name = @cashew_species.common_names.new
+    avocado_name = @avocado_species.common_names.new
 
-    assert_not cashew_name.valid?
-    assert_equal "Common name can't be blank", cashew_name.errors.full_messages.to_sentence
+    assert_not avocado_name.valid?
+    assert_equal "Common name can't be blank", avocado_name.errors.full_messages.to_sentence
   end
 end

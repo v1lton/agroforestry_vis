@@ -23,52 +23,25 @@
     </div>
   <% end %>
 
-  <%= form.fields_for :parameters do |parameter_form| %>
-    <div>
-      <%= parameter_form.label :species_function %>
-      <%= parameter_form.collection_select(:species_function_id, SpeciesFunction.all, :id, :name) %>
-    </div>
+  <div>
+    <%= form.label :layer, style: "display: block" %>
+    <%= form.select :layer, Species.layers.keys.map { |k| [k.humanize, k] } %>
+  </div>
 
-    <div>
-      <%= parameter_form.label :layer, style: "display: block" %>
-      <%= parameter_form.select :layer, SpeciesParameter.layers.keys.map { |k| [k.humanize, k] } %>
-    </div>
+  <div>
+    <%= form.label :start_crop_time, style: "display: block" %>
+    <%= form.text_field :start_crop_time %>
+  </div>
 
-    <div>
-      <%= parameter_form.label :first_crop_time, style: "display: block" %>
-      <%= parameter_form.text_field :first_crop_time %>
-    </div>
+  <div>
+    <%= form.label :end_crop_time, style: "display: block" %>
+    <%= form.text_field :end_crop_time %>
+  </div>
 
-    <div>
-      <%= parameter_form.label :productive_life, style: "display: block" %>
-      <%= parameter_form.text_field :productive_life %>
-    </div>
-
-    <div>
-      <%= parameter_form.label :max_height, style: "display: block" %>
-      <%= parameter_form.text_field :max_height %>
-    </div>
-
-    <div>
-      <%= parameter_form.label :spacing, style: "display: block" %>
-      <%= parameter_form.text_field :spacing %>
-    </div>
-
-    <div>
-      <%= parameter_form.label :water_requirement, style: "display: block" %>
-      <%= parameter_form.select :water_requirement, SpeciesParameter.water_requirements.keys.map { |k| [k.humanize, k] } %>
-    </div>
-
-    <div>
-      <%= parameter_form.label :fertility_requirement, style: "display: block" %>
-      <%= parameter_form.select :fertility_requirement, SpeciesParameter.fertility_requirements.keys.map { |k| [k.humanize, k] } %>
-    </div>
-
-    <div>
-      <%= parameter_form.label :accepts_pruning, style: "display: block" %>
-      <%= parameter_form.check_box :accepts_pruning %>
-    </div>
-  <% end %>
+  <div>
+    <%= form.label :max_height, style: "display: block" %>
+    <%= form.text_field :max_height %>
+  </div>
 
   <div>
     <%= form.submit %>
