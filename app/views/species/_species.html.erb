@@ -11,50 +11,23 @@
       <% end %>
   </p>
 
-  <% species.parameters.each do |parameter| %>
-    <p>
-      <strong>Função:</strong>
-      <%= parameter.species_function.name %>
-    </p>
+  <p>
+    <strong>Estrato:</strong>
+    <%= species.layer %>
+  </p>
 
-    <p>
-      <strong>Estrato:</strong>
-      <%= parameter.layer %>
-    </p>
+  <p>
+    <strong>Primeira colheita (anos):</strong>
+    <%= species.start_crop_time %>
+  </p>
 
-    <p>
-      <strong>Primeira colheita (anos):</strong>
-      <%= parameter.first_crop_time %>
-    </p>
+  <p>
+    <strong>Vida produtiva (anos):</strong>
+    <%= species.end_crop_time %>
+  </p>
 
-    <p>
-      <strong>Vida produtiva (anos):</strong>
-      <%= parameter.productive_life %>
-    </p>
-
-    <p>
-      <strong>Altura máxima (metros):</strong>
-      <%= parameter.max_height %>
-    </p>
-
-    <p>
-      <strong>Espaçamento (metros):</strong>
-      <%= parameter.spacing %>
-    </p>
-
-    <p>
-      <strong>Necessidade de água:</strong>
-      <%= parameter.water_requirement %>
-    </p>
-
-    <p>
-      <strong>Necessidade de fertilidade:</strong>
-      <%= parameter.fertility_requirement %>
-    </p>
-
-    <p>
-      <strong>Aceita poda:</strong>
-      <%= parameter.accepts_pruning ? "Sim" : "Não" %>
-    </p>
-  <% end %>
+  <p>
+    <strong>Altura máxima (metros):</strong>
+    <%= species.max_height %>
+  </p>
 </div>

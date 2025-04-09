@@ -1,7 +1,8 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-avocado:
+avocado_species:
   scientific_name: Persea americana
-
-cashew:
-  scientific_name: Spondias mombin
+  layer: 1
+  start_crop_time: 6
+  end_crop_time: 50
+  max_height: 20

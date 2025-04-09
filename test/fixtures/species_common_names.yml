@@ -2,8 +2,4 @@
 
 avocado_name:
   common_name: Avocado
-  species: avocado
-
-cashew_name:
-  common_name: Cashew
-  species: cashew
+  species: avocado_species
