@@ -9,7 +9,7 @@ csv = CSV.parse(csv_text, headers: true, encoding: "UTF-8")
 # Iterate through each row
 csv.each do |row|
   # Find or initialize a species by scientific name
-  species = Species.new(scientific_name: row["scientific_name"])
+  species = Species.find_or_initialize_by(scientific_name: row["scientific_name"])
 
   unless species.common_names.exists?(common_name: row["common_name"])
     species.common_names.build(common_name: row["common_name"])
