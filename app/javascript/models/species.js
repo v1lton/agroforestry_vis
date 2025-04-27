@@ -33,11 +33,6 @@ export class Species {
     return this.group;
   }
 
-  // Public helper to get position
-  get Position() {
-    return this.group.getAbsolutePosition();
-  }
-
   // Expose id for tracking
   get id() {
     return this.group._id;
