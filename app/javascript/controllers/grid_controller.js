@@ -8,7 +8,7 @@ export default class extends Controller {
 
   #stage
   #layer
-  #species
+  #species = new Map()
   #connections = new Map()
   #STAGEWIDTH = 1000
   #STAGEHEIGHT = 500
@@ -35,20 +35,12 @@ export default class extends Controller {
     this.#layer.add(line)
 
     // Create species
-    var group1 = this.#createSpeciesRepresentation(10, 250, "manga1", "green")
-    var group2 = this.#createSpeciesRepresentation(600, 250, "manga2", "pink")
+    var group1 = this.#createSpeciesRepresentation(10, 250, "green")
+    var group2 = this.#createSpeciesRepresentation(600, 250,"pink")
     this.#layer.add(group1)
     this.#layer.add(group2)
-    this.#species = {
-      manga1: {
-        spacing: 5 * this.#METERINPIXELS,
-        representableShape: group1
-      },
-      manga2: {
-        spacing: 10 * this.#METERINPIXELS,
-        representableShape: group2
-      }
-    }
+    this.#species.set(group1._id, {spacing: 5 * this.#METERINPIXELS, representableShape: group1})
+    this.#species.set(group2._id, {spacing: 10 * this.#METERINPIXELS, representableShape: group2})
 
     // Observe intersection on drag move
     this.#layer.on("dragmove", (e) => {
@@ -62,7 +54,7 @@ export default class extends Controller {
         const key = this.#connectionKey(targetSpecies, otherSpecies)
         const existingLine = this.#connections.get(key)
 
-        if (this.#haveIntersection(this.#species[targetSpecies.id()], this.#species[otherSpecies.id()])) {
+        if (this.#haveIntersection(this.#species.get(targetSpecies._id), this.#species.get(otherSpecies._id))) {
           if (!existingLine) {
             // Create a new line if not existing
             const line = new Konva.Line({
@@ -132,13 +124,12 @@ export default class extends Controller {
     return distanceAB < Math.max(r1.spacing, r2.spacing)
   }
 
-  #createSpeciesRepresentation(x, y, id, color) {
+  #createSpeciesRepresentation(x, y, color) {
     var speciesRepresentation = new Konva.Group({
       x: x,
       y: y,
       draggable: true,
       name: "speciesRepresentation",
-      id: id
     })
 
     var circle = new Konva.Circle({
