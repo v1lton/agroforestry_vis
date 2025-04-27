@@ -9,6 +9,7 @@ export default class extends Controller {
   #stage
   #layer
   #species
+  #connections = new Map()
   #STAGEWIDTH = 1000
   #STAGEHEIGHT = 500
   #SITEWIDTH = 20
@@ -44,7 +45,7 @@ export default class extends Controller {
         representableShape: group1
       },
       manga2: {
-        spacing: 5 * this.#METERINPIXELS,
+        spacing: 10 * this.#METERINPIXELS,
         representableShape: group2
       }
     }
@@ -53,36 +54,59 @@ export default class extends Controller {
     this.#layer.on("dragmove", (e) => {
       const targetSpecies = e.target;
 
-      // Remove old connector lines
-      this.#layer.find('.connectorLine').forEach(line => line.destroy());
-
-      this.#layer.children.forEach((otherSpecies) => {
-        if (otherSpecies === targetSpecies || otherSpecies.id() === "line") {
-          return;
+      this.#layer.find(".speciesRepresentation").forEach((otherSpecies) => {
+        if (otherSpecies === targetSpecies) {
+          return
         }
 
+        const key = this.#connectionKey(targetSpecies, otherSpecies)
+        const existingLine = this.#connections.get(key)
+
         if (this.#haveIntersection(this.#species[targetSpecies.id()], this.#species[otherSpecies.id()])) {
-          this.#layer.find('.connectorLine').forEach(line => line.destroy());
-          const line = new Konva.Line({
-            points: [
+          if (!existingLine) {
+            // Create a new line if not existing
+            const line = new Konva.Line({
+              points: [
+                targetSpecies.getAbsolutePosition().x,
+                targetSpecies.getAbsolutePosition().y,
+                otherSpecies.getAbsolutePosition().x,
+                otherSpecies.getAbsolutePosition().y
+              ],
+              stroke: 'red',
+              strokeWidth: 20,
+              opacity: 0.5,
+              name: 'connectorLine',
+              listening: false
+            });
+            this.#layer.add(line);
+            line.moveToBottom();
+            this.#connections.set(key, line);
+          } else {
+            // Update the existing line's points
+            existingLine.points([
               targetSpecies.getAbsolutePosition().x,
               targetSpecies.getAbsolutePosition().y,
               otherSpecies.getAbsolutePosition().x,
               otherSpecies.getAbsolutePosition().y
-            ],
-            stroke: 'red',
-            strokeWidth: 20,
-            opacity: 0.3,
-            name: 'connectorLine',  // important so we can easily remove it next dragmove
-            listening: false        // line won't block any mouse events
-          });
-          this.#layer.add(line);
-          line.moveToBottom()
+            ])
+          }
+        } else {
+          if (existingLine) {
+            existingLine.destroy()
+            this.#connections.delete(key)
+          }
         }
-      });
+
+      })
 
       this.#layer.batchDraw();  // better for performance
     });
+  }
+
+  #connectionKey(a, b) {
+    const idA = a._id;
+    const idB = b._id;
+    return idA < idB ? `${idA}-${idB}` : `${idB}-${idA}`;
   }
 
   #setupLayer() {
