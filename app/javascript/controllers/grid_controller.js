@@ -62,6 +62,7 @@ export default class extends Controller {
         }
 
         if (this.#haveIntersection(this.#species[targetSpecies.id()], this.#species[otherSpecies.id()])) {
+          this.#layer.find('.connectorLine').forEach(line => line.destroy());
           const line = new Konva.Line({
             points: [
               targetSpecies.getAbsolutePosition().x,
@@ -112,6 +113,7 @@ export default class extends Controller {
       x: x,
       y: y,
       draggable: true,
+      name: "speciesRepresentation",
       id: id
     })
 
