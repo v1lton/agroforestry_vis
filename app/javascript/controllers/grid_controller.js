@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import { Species } from "../models/species"
 
 export default class extends Controller {
   static targets = ["cell", "canvasContainer"]
@@ -50,31 +51,12 @@ export default class extends Controller {
     });
     this.#layer.add(groundLine);
 
-    const species1 = this.#createSpeciesRepresentation(10, 250, "green");
-    const species2 = this.#createSpeciesRepresentation(600, 250, "pink");
+    const species1 = new Species({ x: 10, y: 250, color: "green", spacing: mangoSiteSpacing * this.#METER_IN_PIXELS })
+    this.#species.set(species1.id, species1);
+    const species2 = new Species({ x: 600, y: 250, color: "pink", spacing:  mangoSiteSpacing * 2 * this.#METER_IN_PIXELS})
+    this.#species.set(species2.id, species2);
 
-    this.#layer.add(species1, species2);
-
-    this.#species.set(species1._id, { spacing: mangoSiteSpacing * this.#METER_IN_PIXELS, representableShape: species1 });
-    this.#species.set(species2._id, { spacing: 10 * this.#METER_IN_PIXELS, representableShape: species2 });
-  }
-
-  // Create a draggable species
-  #createSpeciesRepresentation(x, y, color) {
-    const group = new Konva.Group({
-      x,
-      y,
-      draggable: true,
-      name: "speciesRepresentation",
-    });
-
-    group.add(new Konva.Circle({
-      radius: 10,
-      fill: color,
-      name: 'fillShape',
-    }));
-
-    return group;
+    this.#layer.add(species1.shapeRepresentation, species2.shapeRepresentation);
   }
 
   // Add event listeners
@@ -135,8 +117,8 @@ export default class extends Controller {
 
   // Determine if two species intersect
   #haveIntersection = (speciesA, speciesB) => {
-    const rectA = speciesA.representableShape.getClientRect();
-    const rectB = speciesB.representableShape.getClientRect();
+    const rectA = speciesA.clientRect;
+    const rectB = speciesB.clientRect;
 
     if (Math.abs(rectB.y - rectA.y) > this.#Y_TOLERANCE) {
       return false;
