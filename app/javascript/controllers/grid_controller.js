@@ -8,9 +8,11 @@ export default class extends Controller {
 
   #stage
   #layer
+  #species
   #STAGEWIDTH = 1000
   #STAGEHEIGHT = 500
   #SITEWIDTH = 20
+  #METERINPIXELS = this.#STAGEWIDTH / this.#SITEWIDTH
 
   connect() {
     this.#setupStage()
@@ -19,81 +21,67 @@ export default class extends Controller {
   }
 
   #drawCanvas() {
-    const meterInPixels = this.#STAGEWIDTH / this.#SITEWIDTH
+    // Const values
     const mangoSiteSpacing = 5
 
+    // Create and add line
     var line = new Konva.Line({
-      points: [0, 250, 500, 250, 1000, 250],
+      points: [0, 250, 1000, 250],
       stroke: "black",
       strokeWidth: 4,
       id: "line"
     })
     this.#layer.add(line)
 
-    var group = new Konva.Group({
-      x: 20,
-      y: 250,
-      draggable: true
-    })
-    var circle = new Konva.Circle({
-      radius: 10,
-      fill: "green",
-      name: 'fillShape'
-    })
-    group.add(circle)
-    var boundingBox = circle.getClientRect({ relativeTo: group })
-    var box = new Konva.Rect({
-      x: boundingBox.x,
-      y: boundingBox.y,
-      width: meterInPixels * 5,
-      height: 20,
-      strokeWidth: 1,
-      cornerRadius: 10,
-      name: "box"
-    })
-    group.add(box)
-    this.#layer.add(group)
-
-    var group2 = new Konva.Group({
-      x: 600,
-      y: 250,
-      draggable: true
-    })
-    var circle2 = new Konva.Circle({
-      radius: 10,
-      fill: "green",
-      name: 'fillShape'
-    })
-    group2.add(circle2)
-    var boundingBox2 = circle2.getClientRect({ relativeTo: group2 })
-    var box2 = new Konva.Rect({
-      x: boundingBox2.x,
-      y: boundingBox2.y,
-      width: meterInPixels * 5,
-      height: 20,
-      strokeWidth: 1,
-      cornerRadius: 10,
-      name: "box"
-    })
-    group2.add(box2)
+    // Create species
+    var group1 = this.#createSpeciesRepresentation(10, 250, "manga1", "green")
+    var group2 = this.#createSpeciesRepresentation(600, 250, "manga2", "pink")
+    this.#layer.add(group1)
     this.#layer.add(group2)
+    this.#species = {
+      manga1: {
+        spacing: 5 * this.#METERINPIXELS,
+        representableShape: group1
+      },
+      manga2: {
+        spacing: 5 * this.#METERINPIXELS,
+        representableShape: group2
+      }
+    }
 
+    // Observe intersection on drag move
     this.#layer.on("dragmove", (e) => {
-      var target = e.target
-      var targetRect = target.getClientRect()
+      const targetSpecies = e.target;
 
-      this.#layer.children.forEach((shape) => {
-        if (shape == target || shape == line) {
-          return
+      // Remove old connector lines
+      this.#layer.find('.connectorLine').forEach(line => line.destroy());
+
+      this.#layer.children.forEach((otherSpecies) => {
+        if (otherSpecies === targetSpecies || otherSpecies.id() === "line") {
+          return;
         }
 
-        if (this.#haveIntersection(shape.getClientRect(), targetRect)) {
-          shape.findOne('.box').fill("red").opacity(0.3)
-        } else {
-          shape.findOne('.box').fill("")
+        if (this.#haveIntersection(this.#species[targetSpecies.id()], this.#species[otherSpecies.id()])) {
+          const line = new Konva.Line({
+            points: [
+              targetSpecies.getAbsolutePosition().x,
+              targetSpecies.getAbsolutePosition().y,
+              otherSpecies.getAbsolutePosition().x,
+              otherSpecies.getAbsolutePosition().y
+            ],
+            stroke: 'red',
+            strokeWidth: 20,
+            opacity: 0.3,
+            name: 'connectorLine',  // important so we can easily remove it next dragmove
+            listening: false        // line won't block any mouse events
+          });
+          this.#layer.add(line);
+          line.moveToBottom()
         }
-      })
-    })
+      });
+
+      this.#layer.batchDraw();  // better for performance
+    });
   }
 
   #setupLayer() {
@@ -110,11 +98,31 @@ export default class extends Controller {
   }
 
   #haveIntersection(r1, r2) {
-    return !(
-      r2.x > r1.x + r1.width ||
-      r2.x + r2.width < r1.x ||
-      r2.y > r1.y + r1.height ||
-      r2.y + r2.height < r1.y
-    );
+    if (Math.abs(r2.representableShape.getClientRect().y - r1.representableShape.getClientRect().y) > 10) {
+      return false
+    }
+
+    const distanceAB = Math.abs(r2.representableShape.getClientRect().x - r1.representableShape.getClientRect().x)
+
+    return distanceAB < Math.max(r1.spacing, r2.spacing)
+  }
+
+  #createSpeciesRepresentation(x, y, id, color) {
+    var speciesRepresentation = new Konva.Group({
+      x: x,
+      y: y,
+      draggable: true,
+      id: id
+    })
+
+    var circle = new Konva.Circle({
+      radius: 10,
+      fill: color,
+      name: 'fillShape',
+    })
+
+    speciesRepresentation.add(circle)
+
+    return speciesRepresentation
   }
 }
