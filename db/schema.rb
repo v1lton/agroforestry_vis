@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_21_170534) do
+ActiveRecord::Schema[7.2].define(version: 2025_05_01_183840) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -21,7 +21,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_21_170534) do
     t.integer "layer"
     t.float "start_crop_time"
     t.float "end_crop_time"
-    t.float "max_height"
+    t.float "spacing", null: false
   end
 
   create_table "species_common_names", force: :cascade do |t|
