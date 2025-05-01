@@ -1,10 +1,10 @@
 export class Species {
-  constructor({ x, y, color = "green", radius = 10 , spacing = 10}) {
+  constructor({ x, y, radius = 10 , spacing = 10, layer, start_crop, end_crop }) {
     this.x = x;
     this.y = y;
-    this.color = color;
     this.radius = radius;
     this.spacing = spacing;
+    this.layer = layer;
 
     this.group = this.#buildRepresentation();
   }
@@ -20,12 +20,22 @@ export class Species {
 
     const circle = new Konva.Circle({
       radius: this.radius,
-      fill: this.color,
+      fill: this.#color,
       name: "fillShape",
     });
 
     group.add(circle);
     return group;
+  }
+
+  get #color() {
+    const layerColors = {
+      emergent: "blue",
+      high: "green",
+      medium: "yellow",
+      low: "red"
+    };
+    return layerColors[this.layer] || "gray";
   }
 
   // Public method to access the Konva group
