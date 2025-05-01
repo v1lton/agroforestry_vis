@@ -42,6 +42,7 @@ export default class extends Controller {
   // Draw initial canvas
   #drawCanvas() {
     const mangoSiteSpacing = 5;
+    const coffeeSiteSpacing = 0.5;
 
     const groundLine = new Konva.Line({
       points: [0, 250, this.#STAGE_WIDTH, 250],
@@ -51,12 +52,16 @@ export default class extends Controller {
     });
     this.#layer.add(groundLine);
 
-    const species1 = new Species({ x: 10, y: 250, color: "green", spacing: mangoSiteSpacing * this.#METER_IN_PIXELS })
+    const species1 = new Species({ x: 10, y: 250, spacing: mangoSiteSpacing * this.#METER_IN_PIXELS, layer: "high", start_crop: 3, end_crop: 50 })
     this.#species.set(species1.id, species1);
-    const species2 = new Species({ x: 600, y: 250, color: "pink", spacing:  mangoSiteSpacing * 2 * this.#METER_IN_PIXELS})
+    const species2 = new Species({ x: 600, y: 250, spacing:  mangoSiteSpacing * 2 * this.#METER_IN_PIXELS, layer: "high", start_crop: 3, end_crop: 50 })
     this.#species.set(species2.id, species2);
+    const species3 = new Species({ x: 750, y: 250, spacing:  coffeeSiteSpacing * this.#METER_IN_PIXELS, layer: "low", start_crop: 2, end_crop: 50 })
+    this.#species.set(species3.id, species3);
+    const species4 = new Species({ x: 900, y: 250, spacing:  coffeeSiteSpacing * this.#METER_IN_PIXELS, layer: "low", start_crop: 2, end_crop: 50 })
+    this.#species.set(species4.id, species4);
 
-    this.#layer.add(species1.shapeRepresentation, species2.shapeRepresentation);
+    this.#layer.add(species1.shapeRepresentation, species2.shapeRepresentation, species3.shapeRepresentation, species4.shapeRepresentation);
   }
 
   // Add event listeners
@@ -119,6 +124,15 @@ export default class extends Controller {
   #haveIntersection = (speciesA, speciesB) => {
     const rectA = speciesA.clientRect;
     const rectB = speciesB.clientRect;
+
+    if (speciesA.layer != speciesB.layer) {
+      return false;
+    }
+
+    // If there is no production time overlap, then there is no intersection.
+    if ((speciesA.end_crop <= speciesB.start_crop) || (speciesB.end_crop <= speciesA.start_crop)) {
+      return false;
+    }
 
     if (Math.abs(rectB.y - rectA.y) > this.#Y_TOLERANCE) {
       return false;
