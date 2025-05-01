@@ -17,7 +17,6 @@ export class Species {
     this.name = name;
     this.layer = layer;
     this.spacing = spacing;
-    this.layer = layer;
     this.start_crop = start_crop;
     this.end_crop = end_crop;
 
