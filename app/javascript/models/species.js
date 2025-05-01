@@ -1,25 +1,74 @@
+/**
+ * Represents a plant species in the agroforestry visualization.
+ */
 export class Species {
-  constructor({ x, y, radius = 10 , spacing = 10, layer, start_crop, end_crop }) {
-    this.x = x;
-    this.y = y;
-    this.radius = radius;
+  /**
+   * Creates a new Species instance.
+   * @param {Object} params - The initialization parameters.
+   * @param {number} params.x - The x-coordinate of the species.
+   * @param {number} params.y - The y-coordinate of the species.
+   * @param {string} params.name - The name of the species.
+   * @param {string} params.layer - The vertical layer category (e.g., 'emergent', 'high').
+   * @param {number} params.spacing - The spacing requirement of the species.
+   * @param {string} params.start_crop - The start crop in years of the species.
+   * @param {string} params.end_crop - The end crop in years of the species.
+   */
+  constructor({ x, y, name, layer, spacing, start_crop, end_crop }) {
+    this.name = name;
+    this.layer = layer;
     this.spacing = spacing;
     this.layer = layer;
+    this.start_crop = start_crop;
+    this.end_crop = end_crop;
 
-    this.group = this.#buildRepresentation();
+    this.group = this.#buildShapeRepresentation({ x: x, y: y });
   }
 
-  // Private builder
-  #buildRepresentation() {
+  /**
+   * Gets the shape representation (Konva Group) of the species.
+   * @returns {Konva.Group} The Konva group representing the species.
+   */
+  get shapeRepresentation() {
+    return this.group;
+  }
+
+  /**
+   * Gets the internal ID of the Konva group.
+   * @returns {string} The ID of the Konva group.
+   */
+  get id() {
+    return this.group._id;
+  }
+
+  /**
+   * Gets the client rectangle of the Konva group.
+   * @returns {Object} The client rectangle of the Konva group.
+   */
+  get clientRect() {
+    return this.group.getClientRect();
+  }
+
+
+  // MARK: - Shape Representation
+
+  /**
+   * Builds the shape representation for the species using Konva.
+   * @private
+   * @param {Object} position - The x and y coordinates.
+   * @param {number} position.x - The x-coordinate.
+   * @param {number} position.y - The y-coordinate.
+   * @returns {Konva.Group} The group containing the circle representation.
+   */
+  #buildShapeRepresentation({ x, y }) {
     const group = new Konva.Group({
-      x: this.x,
-      y: this.y,
+      x: x,
+      y: y,
       draggable: true,
       name: "speciesRepresentation",
     });
 
     const circle = new Konva.Circle({
-      radius: this.radius,
+      radius: 10,
       fill: this.#color,
       name: "fillShape",
     });
@@ -28,6 +77,11 @@ export class Species {
     return group;
   }
 
+  /**
+   * Gets the color associated with the species layer.
+   * @private
+   * @returns {string} The color string for the layer.
+   */
   get #color() {
     const layerColors = {
       emergent: "blue",
@@ -36,20 +90,5 @@ export class Species {
       low: "red"
     };
     return layerColors[this.layer] || "gray";
-  }
-
-  // Public method to access the Konva group
-  get shapeRepresentation() {
-    return this.group;
-  }
-
-  // Expose id for tracking
-  get id() {
-    return this.group._id;
-  }
-
-  // Expose clientRect (e.g. for intersection detection)
-  get clientRect() {
-    return this.group.getClientRect();
   }
 }
