@@ -1,21 +1,28 @@
 <h1>Canvas</h1>
 
 <div data-controller="canvas">
+  <div class="row">
 
-  <% @species.each do |species| %>
-    <div>
-      <%= species.common_names.first.common_name %>
-      <button data-action="canvas#addSpecies"
-              data-canvas-species-name-param="<%= species.name%>"
-              data-canvas-species-layer-param="<%= species.layer %>"
-              data-canvas-species-start-crop-year-param="<%= species.start_crop_time %>"
-              data-canvas-species-end-crop-year-param="<%= species.end_crop_time %>"
-      >
-        +
-      </button>
+    <div class="col">
+      <% @species.each do |species| %>
+        <div>
+          <%= species.common_names.first.common_name %>
+          <button data-action="canvas#addSpecies"
+                  data-canvas-name-param="<%= species.name%>"
+                  data-canvas-layer-param="<%= species.layer %>"
+                  data-canvas-spacing-param="<%= species.spacing %>"
+                  data-canvas-start-param="<%= species.start_crop_time %>"
+                  data-canvas-end-param="<%= species.end_crop_time %>"
+          >
+            +
+          </button>
+        </div>
+      <% end %>
     </div>
-  <% end %>
 
-  <div data-canvas-target="canvasContainer">
+    <div class="col">
+      <div data-canvas-target="canvasContainer">
+      </div>
+    </div>
   </div>
 </div>

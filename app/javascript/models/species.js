@@ -83,10 +83,10 @@ export class Species {
    */
   get #color() {
     const layerColors = {
-      emergent: "blue",
-      high: "green",
-      medium: "yellow",
-      low: "red"
+      emergent_layer: "blue",
+      high_layer: "green",
+      medium_layer: "yellow",
+      low_layer: "red"
     };
     return layerColors[this.layer] || "gray";
   }
