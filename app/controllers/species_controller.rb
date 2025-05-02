@@ -5,8 +5,6 @@ class SpeciesController < ApplicationController
 
   def grid
     @species = Species.all
-
-
   end
 
   # GET /species or /species.json

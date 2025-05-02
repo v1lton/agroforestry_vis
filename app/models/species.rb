@@ -14,4 +14,14 @@ class Species < ApplicationRecord
     :high_layer,
     :emergent_layer
   ]
+
+  def name
+    common_name = common_names.first.common_name
+
+    if common_name
+      return common_name
+    else
+      return scientific_name
+    end
+  end
 end

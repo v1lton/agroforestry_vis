@@ -1,5 +1,4 @@
 import { Controller } from "@hotwired/stimulus"
-import { OverlapConnector } from "../models/overlap_connector"
 import { Species } from "../models/species"
 import { TreeRow } from "../models/tree_row"
 
@@ -49,6 +48,8 @@ export default class extends Controller {
     this.#setupLayer();
     this.#addEventListeners();
   }
+
+  addSpecies(event) { }
 
   /**
    * Initializes the Konva stage.
