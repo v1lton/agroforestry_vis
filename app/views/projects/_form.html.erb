@@ -27,6 +27,15 @@
   </div>
 
   <div>
+    <%= form.label :species_ids, "Select Species", style: "display: block" %>
+    <%= form.collection_check_boxes :species_ids, @species, :id, :name do |cb| %>
+      <div style="margin-bottom: 5px;">
+        <%= cb.label { cb.check_box + " " + cb.text } %>
+      </div>
+    <% end %>
+  </div>
+
+  <div>
     <%= form.submit %>
   </div>
 <% end %>

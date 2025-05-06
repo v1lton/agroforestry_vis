@@ -14,4 +14,9 @@
     <%= project.height %>
   </p>
 
+  <p>
+    <strong>Species:</strong>
+    <%= project.species.map(&:name).join(", ") %>
+  </p>
+
 </div>
