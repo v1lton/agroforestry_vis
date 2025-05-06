@@ -1,0 +1,31 @@
+<h1>Desenho do croqui</h1>
+
+<div data-controller="canvas">
+  <div class="row">
+
+    <div class="col">
+      <h2>Espécies</h2>
+      <% @project_species.each do |species| %>
+        <div>
+          <%= species.name %>
+          <button data-action="canvas#addSpecies"
+                  data-canvas-name-param="<%= species.name%>"
+                  data-canvas-layer-param="<%= species.layer %>"
+                  data-canvas-spacing-param="<%= species.spacing %>"
+                  data-canvas-start-param="<%= species.start_crop_time %>"
+                  data-canvas-end-param="<%= species.end_crop_time %>"
+          >
+            +
+          </button>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="col">
+      <h2>Croqui</h2>
+      <div data-canvas-target="canvasContainer">
+      </div>
+    </div>
+
+  </div>
+</div>

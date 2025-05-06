@@ -3,10 +3,6 @@
 class SpeciesController < ApplicationController
   before_action :set_species, only: %i[ show edit update destroy ]
 
-  def grid
-    @species = Species.all
-  end
-
   # GET /species or /species.json
   def index
     @species = Species.all

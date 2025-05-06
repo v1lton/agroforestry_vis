@@ -1,12 +1,14 @@
 Rails.application.routes.draw do
-  resources :projects
+  resources :projects do
+    member do
+      get 'design'
+    end
+  end
 
   # Defines the root path route ("/")
   root "pages#home"
 
   resources :species
-
-  get "grid", to: "species#grid", as: :grid
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

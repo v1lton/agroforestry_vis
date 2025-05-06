@@ -1,6 +1,7 @@
 class ProjectsController < ApplicationController
-  before_action :set_project, only: %i[ show edit update destroy ]
+  before_action :set_project, only: %i[ show edit update destroy design ]
   before_action :set_species
+  before_action :set_project_species, only: %i[ design ]
 
   # GET /projects or /projects.json
   def index
@@ -14,6 +15,7 @@ class ProjectsController < ApplicationController
   # GET /projects/new
   def new
     @project = Project.new
+    @species = Species.all
   end
 
   # GET /projects/1/edit
@@ -26,20 +28,25 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       if @project.save
-        format.html { redirect_to @project, notice: "Project was successfully created." }
+        format.html { redirect_to grid_project_path(@project), notice: "Projeto foi criado com sucesso." }
         format.json { render :show, status: :created, location: @project }
       else
+        @species = Species.all
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @project.errors, status: :unprocessable_entity }
       end
     end
   end
 
+  def design
+
+  end
+
   # PATCH/PUT /projects/1 or /projects/1.json
   def update
     respond_to do |format|
       if @project.update(project_params)
-        format.html { redirect_to @project, notice: "Project was successfully updated." }
+        format.html { redirect_to @project, notice: "Projeto foi atualizado com sucesso." }
         format.json { render :show, status: :ok, location: @project }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -53,7 +60,7 @@ class ProjectsController < ApplicationController
     @project.destroy!
 
     respond_to do |format|
-      format.html { redirect_to projects_path, status: :see_other, notice: "Project was successfully destroyed." }
+      format.html { redirect_to projects_url, notice: "Projeto foi excluído com sucesso." }
       format.json { head :no_content }
     end
   end
@@ -71,5 +78,11 @@ class ProjectsController < ApplicationController
 
   def set_species
     @species = Species.all
+  end
+
+  def set_project_species
+    @project_species = @project.species
+    puts("PAPAI NOEL")
+    puts(@project_species)
   end
 end

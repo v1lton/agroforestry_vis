@@ -1,11 +1,28 @@
 <% content_for :title, "New project" %>
 
-<h1>New project</h1>
+<!-- Hero Section -->
+<div class="hero-section py-5" style="background-color: #f8f9fa;">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <h1 class="display-4 fw-bold mb-4 text-center" style="color: #2E7D32;">Criar Novo Projeto</h1>
+        <p class="lead mb-4 text-center">Comece o seu projeto com a seleção das espécies do Sistema.</p>
+      </div>
+    </div>
+  </div>
+</div>
 
-<%= render "form", project: @project %>
+<!-- Form Section -->
+<div class="container my-5">
+  <div class="row">
+    <div class="col-lg-8 mx-auto">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <%= render "form", project: @project %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <br>
-
-<div>
-  <%= link_to "Back to projects", projects_path %>
-</div>

@@ -1,9 +1,8 @@
-<%= form_with(model: project) do |form| %>
+<%= form_with(model: project, class: "needs-validation") do |form| %>
   <% if project.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(project.errors.count, "error") %> prohibited this project from being saved:</h2>
-
-      <ul>
+    <div class="alert alert-danger mb-4">
+      <h4 class="alert-heading"><%= pluralize(project.errors.count, "error") %> prohibited this project from being saved:</h4>
+      <ul class="mb-0">
         <% project.errors.each do |error| %>
           <li><%= error.full_message %></li>
         <% end %>
@@ -11,31 +10,42 @@
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :title, style: "display: block" %>
-    <%= form.text_field :title %>
+  <div class="mb-4">
+    <%= form.label :title, "Título", class: "form-label fw-bold" %>
+    <%= form.text_field :title, class: "form-control form-control-lg", placeholder: "Título do projeto" %>
   </div>
 
-  <div>
-    <%= form.label :width, style: "display: block" %>
-    <%= form.number_field :width %>
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <%= form.label :width, "Largura", class: "form-label fw-bold" %>
+      <%= form.number_field :width, class: "form-control", placeholder: "Largura em metros" %>
+    </div>
+    <div class="col-md-6">
+      <%= form.label :height, "Altura", class: "form-label fw-bold" %>
+      <%= form.number_field :height, class: "form-control", placeholder: "Altura em metros" %>
+    </div>
   </div>
 
-  <div>
-    <%= form.label :height, style: "display: block" %>
-    <%= form.number_field :height %>
-  </div>
-
-  <div>
-    <%= form.label :species_ids, "Select Species", style: "display: block" %>
-    <%= form.collection_check_boxes :species_ids, @species, :id, :name do |cb| %>
-      <div style="margin-bottom: 5px;">
-        <%= cb.label { cb.check_box + " " + cb.text } %>
+  <div class="mb-4">
+    <%= form.label :species_ids, "Selecionar espécies do SAF", class: "form-label fw-bold" %>
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <%= form.collection_check_boxes :species_ids, @species, :id, :name do |cb| %>
+            <div class="col-md-4 mb-2">
+              <div class="form-check">
+                <%= cb.check_box(class: "form-check-input") %>
+                <%= cb.label(class: "form-check-label") %>
+              </div>
+            </div>
+          <% end %>
+        </div>
       </div>
-    <% end %>
+    </div>
   </div>
 
-  <div>
-    <%= form.submit %>
+  <div class="d-flex justify-content-between align-items-center">
+    <%= link_to "Retornar", projects_path, class: "btn btn-outline-secondary" %>
+    <%= form.submit "Criar projeto", class: "btn btn-success btn-lg px-4" %>
   </div>
 <% end %>
