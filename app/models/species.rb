@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class Species < ApplicationRecord
+  has_many :project_species
+  has_many :projects, through: :project_species
+
   has_many :common_names, class_name: "SpeciesCommonName", inverse_of: :species, dependent: :destroy
 
   accepts_nested_attributes_for :common_names, allow_destroy: true

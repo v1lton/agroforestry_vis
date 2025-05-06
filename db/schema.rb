@@ -10,9 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_05_06_180921) do
+ActiveRecord::Schema[7.2].define(version: 2025_05_06_182146) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "project_species", force: :cascade do |t|
+    t.bigint "project_id", null: false
+    t.bigint "species_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_project_species_on_project_id"
+    t.index ["species_id"], name: "index_project_species_on_species_id"
+  end
 
   create_table "projects", force: :cascade do |t|
     t.string "title"
@@ -40,5 +49,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_06_180921) do
     t.index ["species_id"], name: "index_species_common_names_on_species_id"
   end
 
+  add_foreign_key "project_species", "projects"
+  add_foreign_key "project_species", "species"
   add_foreign_key "species_common_names", "species"
 end
