@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   resources :projects
 
   # Defines the root path route ("/")
-  root "species#index"
+  root "pages#home"
 
   resources :species
 
