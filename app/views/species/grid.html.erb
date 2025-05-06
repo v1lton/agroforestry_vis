@@ -4,27 +4,41 @@
   <div class="row">
 
     <div class="col">
-      <% @species.each do |species| %>
-        <div>
-          <%= species.common_names.first.common_name %>
-          <button data-action="canvas#addSpecies"
-                  data-canvas-name-param="<%= species.name%>"
-                  data-canvas-layer-param="<%= species.layer %>"
-                  data-canvas-spacing-param
+      <h2>Espécies</h2>
+      <div
+        data-controller="search"
+        data-search-items-value='<%= raw @species.map { |s|
+          {
+            id: s.id,
+            name: s.name,
+            layer: s.layer,
+            spacing: s.spacing,
+            start_crop: s.start_crop_time,
+            end_crop: s.end_crop_time
+          }
+        }.to_json %>'
+      >
+        <input
+          type="text"
+          placeholder="Buscar espécies..."
+          class="form-control mb-3"
+          data-action="search#filter"
+        />
+        <ul
+          class="list-group position-absolute"
+          data-search-target="results"
+        ></ul>
 
-                    ="<%= species.spacing %>"
-                  data-canvas-start-param="<%= species.start_crop_time %>"
-                  data-canvas-end-param="<%= species.end_crop_time %>"
-          >
-            +
-          </button>
+        <div data-search-target="list">
+
         </div>
-      <% end %>
+      </div>
     </div>
 
     <div class="col">
       <div data-canvas-target="canvasContainer">
       </div>
     </div>
+
   </div>
 </div>
