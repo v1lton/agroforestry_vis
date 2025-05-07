@@ -5,4 +5,4 @@ avocado_species:
   layer: 1
   start_crop_time: 6
   end_crop_time: 50
-  max_height: 20
+  spacing: 10

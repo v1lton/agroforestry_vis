@@ -1,0 +1,20 @@
+<nav class="navbar navbar-expand-lg" style="background-color: #2E7D32; font-family: 'Poppins', sans-serif;">
+  <div class="container">
+    <%= link_to root_path, class: "navbar-brand text-white fw-bold" do %>
+      <i class="fas fa-seedling me-2"></i>Agrofloresta Design
+    <% end %>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <%= link_to "Home", root_path, class: "nav-link text-white" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Novo projeto", new_project_path, class: "nav-link text-white" %>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

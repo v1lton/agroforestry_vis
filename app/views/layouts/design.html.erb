@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Agrofloresta Design</title>
+  <title>Agrofloresta Design - <%= @project.title %></title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
@@ -15,6 +15,9 @@
   <style>
     body {
       font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
     }
     .navbar {
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -32,9 +35,7 @@
 
 <body>
   <%= render 'shared/navbar' %>
-  <div class="container mt-4">
-    <%= yield %>
-  </div>
+  <%= yield %>
   <%= yield :scripts %>
 </body>
-</html>
+</html> 

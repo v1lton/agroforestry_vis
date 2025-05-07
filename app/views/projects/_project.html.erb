@@ -1,0 +1,22 @@
+<div id="<%= dom_id project %>">
+  <p>
+    <strong>Title:</strong>
+    <%= project.title %>
+  </p>
+
+  <p>
+    <strong>Width:</strong>
+    <%= project.width %>
+  </p>
+
+  <p>
+    <strong>Height:</strong>
+    <%= project.height %>
+  </p>
+
+  <p>
+    <strong>Species:</strong>
+    <%= project.species.map(&:name).join(", ") %>
+  </p>
+
+</div>

@@ -24,7 +24,7 @@ csv.each do |row|
            end,
     start_crop_time: row["start_crop_time"],
     end_crop_time: row["end_crop_time"],
-    max_height: row["max_height"],
+    spacing: row["spacing"],
   )
 
   species.save!

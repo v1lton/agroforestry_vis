@@ -1,0 +1,133 @@
+<!-- Main Design Interface -->
+<div class="design-interface" style="height: calc(100vh - 56px); display: flex; flex-direction: column;" data-controller="canvas">
+  <!-- Top Toolbar -->
+  <div class="toolbar bg-white border-bottom py-2 px-3" style="height: 48px;">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center">
+        <h5 class="mb-0 me-3" style="color: #2E7D32;"><%= @project.title %></h5>
+<!--        <div class="btn-group me-3">-->
+<!--          <button class="btn btn-outline-secondary btn-sm">-->
+<!--            <i class="fas fa-undo"></i>-->
+<!--          </button>-->
+<!--          <button class="btn btn-outline-secondary btn-sm">-->
+<!--            <i class="fas fa-redo"></i>-->
+<!--          </button>-->
+<!--        </div>-->
+<!--        <div class="btn-group">-->
+<!--          <button class="btn btn-outline-secondary btn-sm">-->
+<!--            <i class="fas fa-plus"></i> Zoom In-->
+<!--          </button>-->
+<!--          <button class="btn btn-outline-secondary btn-sm">-->
+<!--            <i class="fas fa-minus"></i> Zoom Out-->
+<!--          </button>-->
+<!--        </div>-->
+      </div>
+      <div>
+        <button class="btn btn-success btn-sm">
+          <i class="fas fa-save"></i> Salvar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="flex-grow-1 d-flex" style="overflow: hidden;">
+    <!-- Left Sidebar - Species Panel -->
+    <div class="species-panel bg-white border-end" style="width: 280px; overflow-y: auto;">
+      <div class="p-3">
+        <h6 class="text-muted mb-3">ESPÉCIES ESCOLHIDAS</h6>
+        <div class="species-list">
+          <% @project_species.each do |species| %>
+            <div class="species-item p-2 mb-2 rounded" 
+                 style="cursor: grab; border: 1px solid #e9ecef;"
+                 data-species-id="<%= species.id %>"
+                 data-species-name="<%= species.scientific_name %>"
+                 data-action="click->canvas#addSpecies"
+                 data-canvas-name-param="<%= species.name%>"
+                 data-canvas-layer-param="<%= species.layer %>"
+                 data-canvas-spacing-param="<%= species.spacing %>"
+                 data-canvas-start-param="<%= species.start_crop_time %>"
+                 data-canvas-end-param="<%= species.end_crop_time %>">
+              <div class="d-flex align-items-center">
+<!--                <div class="species-color me-2" -->
+<!--                     style="width: 24px; height: 24px; background-color: #2E7D32; border-radius: 4px;"></div>-->
+                <div>
+                  <div class="fw-medium"><%= species.name %></div>
+                  <small class="text-muted"><%= species.layer_name %></small>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Canvas Area -->
+    <div class="canvas-area flex-grow-1 bg-light" style="position: relative; overflow: auto;">
+      <div class="canvas-container"
+           style="position: absolute; 
+                  top: 50%;
+                  left: 50%;
+                  transform: translate(-50%, -50%);
+                  background-color: white;
+                  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+                  border-radius: 8px;">
+        <div data-canvas-target="canvasContainer">
+        </div>
+<!--        <div class="grid-container"-->
+<!--             style="display: grid;-->
+<!--                    grid-template-columns: repeat(<%#= @project.width %>, 1fr);-->
+<!--                    gap: 1px;-->
+<!--                    background-color: #e9ecef;-->
+<!--                    padding: 1px;-->
+<!--                    border-radius: 8px;">-->
+          <%# (@project.width * @project.height).times do |i| %>
+<!--            <div class="grid-cell"-->
+<!--                 style="width: 40px;-->
+<!--                        height: 40px;-->
+<!--                        background-color: white;-->
+<!--                        border-radius: 2px;-->
+<!--                        position: relative;"-->
+<!--                 data-cell-index="<%#= i %>">-->
+<!--            </div>-->
+          <%# end %>
+<!--        </div>-->
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<% content_for :styles do %>
+<style>
+  /* Override container padding for design view */
+  .design-interface {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    max-width: 100vw;
+  }
+
+  .species-item:hover {
+    background-color: #f8f9fa;
+  }
+  
+  .species-item:active {
+    cursor: grabbing;
+  }
+
+  .grid-cell:hover {
+    background-color: #f8f9fa;
+  }
+
+  .grid-cell.drag-over {
+    background-color: #e8f5e9;
+    border: 2px dashed #2E7D32;
+  }
+
+  /* Ensure the canvas area takes full width */
+  .canvas-area {
+    width: calc(100vw - 560px); /* Full width minus sidebars */
+  }
+</style>
+<% end %>

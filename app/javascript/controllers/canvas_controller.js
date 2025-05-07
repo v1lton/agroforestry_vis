@@ -1,5 +1,4 @@
 import { Controller } from "@hotwired/stimulus"
-import { OverlapConnector } from "../models/overlap_connector"
 import { Species } from "../models/species"
 import { TreeRow } from "../models/tree_row"
 
@@ -47,7 +46,24 @@ export default class extends Controller {
   connect()  {
     this.#setupStage();
     this.#setupLayer();
+    this.#setupTreeRow()
     this.#addEventListeners();
+  }
+
+  addSpecies(event) {
+    const params = event.params
+    const species = new Species({
+      x: 10,
+      y: 10,
+      name: params.name,
+      layer: params.layer,
+      spacing: params.spacing * this.#METER_IN_PIXELS,
+      start_crop: params.start,
+      end_crop: params.end
+    })
+
+    this.#layer.add(species.shapeRepresentation)
+    this.#species.set(species.id, species)
   }
 
   /**
@@ -71,6 +87,16 @@ export default class extends Controller {
     this.#stage.add(this.#layer);
   }
 
+  #setupTreeRow() {
+    const treeRow = new TreeRow({
+      originX: 0,
+      originY: 250,
+      endX: this.#STAGE_WIDTH,
+      endY: 250
+    })
+    this.#layer.add(treeRow.shapeRepresentation)
+  }
+
   /**
    * Adds Konva event listeners to the layer.
    * @private
@@ -85,26 +111,23 @@ export default class extends Controller {
    * @private
    */
   #handleDragMove = (e) => {
-    const targetNode = e.target;
-    const targetData = this.#species.get(targetNode._id);
+    const targetSpecies = e.target;
 
-    const updateOrCreateLine = (otherNode, otherData) => {
-      const key = this.#connectionKey(targetNode, otherNode);
+    this.#layer.find(".speciesRepresentation").forEach((otherSpecies) => {
+      if (otherSpecies === targetSpecies) return;
+
+      const key = this.#connectionKey(targetSpecies, otherSpecies);
       const existingLine = this.#connections.get(key);
 
-      const hasIntersection = this.#haveIntersection(targetData, otherData);
-
-      if (hasIntersection) {
-        const points = [
-          targetNode.getAbsolutePosition().x,
-          targetNode.getAbsolutePosition().y,
-          otherNode.getAbsolutePosition().x,
-          otherNode.getAbsolutePosition().y
-        ];
-
+      if (this.#haveIntersection(this.#species.get(targetSpecies._id), this.#species.get(otherSpecies._id))) {
         if (!existingLine) {
           const line = new Konva.Line({
-            points,
+            points: [
+              targetSpecies.getAbsolutePosition().x,
+              targetSpecies.getAbsolutePosition().y,
+              otherSpecies.getAbsolutePosition().x,
+              otherSpecies.getAbsolutePosition().y
+            ],
             stroke: 'red',
             strokeWidth: 20,
             opacity: 0.5,
@@ -115,19 +138,17 @@ export default class extends Controller {
           line.moveToBottom();
           this.#connections.set(key, line);
         } else {
-          existingLine.points(points);
+          existingLine.points([
+            targetSpecies.getAbsolutePosition().x,
+            targetSpecies.getAbsolutePosition().y,
+            otherSpecies.getAbsolutePosition().x,
+            otherSpecies.getAbsolutePosition().y
+          ]);
         }
       } else if (existingLine) {
         existingLine.destroy();
         this.#connections.delete(key);
       }
-    };
-
-    this.#layer.find(".speciesRepresentation").forEach((otherNode) => {
-      if (otherNode === targetNode) return;
-
-      const otherData = this.#species.get(otherNode._id);
-      updateOrCreateLine(otherNode, otherData);
     });
 
     this.#layer.batchDraw();

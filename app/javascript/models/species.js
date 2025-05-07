@@ -72,7 +72,22 @@ export class Species {
       name: "fillShape",
     });
 
+    const name = new Konva.Text({
+      text: this.name,
+      fontSize: 12,
+      fontFamily: "Arial",
+      fontStyle: "bold",
+      fill: "black",
+      x: 0,
+      y: -16,
+      rotation: -64,
+      offsetX: 0,
+      offsetY: 0,
+      listening: false
+    })
+
     group.add(circle);
+    group.add(name);
     return group;
   }
 
@@ -83,10 +98,10 @@ export class Species {
    */
   get #color() {
     const layerColors = {
-      emergent: "blue",
-      high: "green",
-      medium: "yellow",
-      low: "red"
+      emergent_layer: "blue",
+      high_layer: "green",
+      medium_layer: "yellow",
+      low_layer: "red"
     };
     return layerColors[this.layer] || "gray";
   }
