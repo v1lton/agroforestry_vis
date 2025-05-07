@@ -10,6 +10,7 @@ class Species < ApplicationRecord
 
   validates_presence_of :scientific_name
   validates_presence_of :common_names
+  validates :layer, presence: true
 
   enum :layer, [
     :low_layer,
@@ -25,6 +26,21 @@ class Species < ApplicationRecord
       return common_name
     else
       return scientific_name
+    end
+  end
+
+  def layer_name
+    case layer
+    when 'emergent_layer'
+      'Emergente'
+    when 'high_layer'
+      'Alto'
+    when 'medium_layer'
+      'Médio'
+    when 'low_layer'
+      'Baixo'
+    else
+      layer
     end
   end
 end

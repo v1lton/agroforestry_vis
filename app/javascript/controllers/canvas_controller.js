@@ -52,7 +52,6 @@ export default class extends Controller {
 
   addSpecies(event) {
     const params = event.params
-    console.log(params)
     const species = new Species({
       x: 10,
       y: 10,

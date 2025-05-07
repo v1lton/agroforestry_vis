@@ -28,7 +28,7 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       if @project.save
-        format.html { redirect_to grid_project_path(@project), notice: "Projeto foi criado com sucesso." }
+        format.html { redirect_to design_project_path(@project), notice: "Projeto foi criado com sucesso." }
         format.json { render :show, status: :created, location: @project }
       else
         @species = Species.all
@@ -39,7 +39,7 @@ class ProjectsController < ApplicationController
   end
 
   def design
-
+    render layout: 'design'
   end
 
   # PATCH/PUT /projects/1 or /projects/1.json
@@ -82,7 +82,5 @@ class ProjectsController < ApplicationController
 
   def set_project_species
     @project_species = @project.species
-    puts("PAPAI NOEL")
-    puts(@project_species)
   end
 end
