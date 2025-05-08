@@ -9,6 +9,11 @@ import { TreeRow } from "../models/tree_row"
 export default class extends Controller {
   static targets = ["cell", "canvasContainer"]
 
+  static values = {
+    width: Number,
+    height: Number
+  }
+
   // Private Fields
 
   /** @type {Konva.Stage} The main canvas stage. */
@@ -46,8 +51,8 @@ export default class extends Controller {
   connect()  {
     this.#setupStage();
     this.#setupLayer();
-    this.#setupTreeRow()
-    this.#addEventListeners();
+    // this.#setupTreeRow()
+    // this.#addEventListeners();
   }
 
   addSpecies(event) {
@@ -71,6 +76,12 @@ export default class extends Controller {
    * @private
    */
   #setupStage() {
+    const containerRect = this.canvasContainerTarget.getBoundingClientRect()
+    this.#STAGE_WIDTH = containerRect.width
+    this.#STAGE_HEIGHT = containerRect.height
+
+    // Stage's size is matching the div container's size on initialization.
+    // It is NOT, for now, listening to resize.
     this.#stage = new Konva.Stage({
       container: this.canvasContainerTarget,
       width: this.#STAGE_WIDTH,
@@ -85,6 +96,28 @@ export default class extends Controller {
   #setupLayer() {
     this.#layer = new Konva.Layer();
     this.#stage.add(this.#layer);
+
+    // Horizontal lines
+    const gridSizeY = this.#STAGE_HEIGHT / this.heightValue;
+    for (let i = 0; i <= this.#STAGE_HEIGHT; i += gridSizeY) {
+      const line = new Konva.Line({
+        points: [0, i, this.#STAGE_WIDTH, i],
+        stroke: "#e0e0e0",
+        strokeWidth: 1
+      });
+      this.#layer.add(line);
+    }
+
+    // Vertical lines
+    const gridSizeX = this.#STAGE_WIDTH / this.widthValue;
+    for (let i = 0; i <= this.#STAGE_WIDTH; i += gridSizeX) {
+      const line = new Konva.Line({
+        points: [i, 0, i, this.#STAGE_HEIGHT],
+        stroke: "#e0e0e0",
+        strokeWidth: 1
+      });
+      this.#layer.add(line);
+    }
   }
 
   #setupTreeRow() {

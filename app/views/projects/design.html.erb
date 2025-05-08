@@ -1,5 +1,10 @@
 <!-- Main Design Interface -->
-<div class="design-interface" style="height: calc(100vh - 56px); display: flex; flex-direction: column;" data-controller="canvas">
+<div class="design-interface"
+     style="height: calc(100vh - 56px); display: flex; flex-direction: column;"
+     data-controller="canvas"
+     data-canvas-width-value="<%= @project.width %>"
+     data-canvas-height-value="<%= @project.height %>"
+>
   <!-- Top Toolbar -->
   <div class="toolbar bg-white border-bottom py-2 px-3" style="height: 48px;">
     <div class="d-flex justify-content-between align-items-center">
@@ -63,36 +68,10 @@
     </div>
 
     <!-- Canvas Area -->
-    <div class="canvas-area flex-grow-1 bg-light" style="position: relative; overflow: auto;">
-      <div class="canvas-container"
-           style="position: absolute; 
-                  top: 50%;
-                  left: 50%;
-                  transform: translate(-50%, -50%);
-                  background-color: white;
-                  box-shadow: 0 0 20px rgba(0,0,0,0.1);
-                  border-radius: 8px;">
-        <div data-canvas-target="canvasContainer">
-        </div>
-<!--        <div class="grid-container"-->
-<!--             style="display: grid;-->
-<!--                    grid-template-columns: repeat(<%#= @project.width %>, 1fr);-->
-<!--                    gap: 1px;-->
-<!--                    background-color: #e9ecef;-->
-<!--                    padding: 1px;-->
-<!--                    border-radius: 8px;">-->
-          <%# (@project.width * @project.height).times do |i| %>
-<!--            <div class="grid-cell"-->
-<!--                 style="width: 40px;-->
-<!--                        height: 40px;-->
-<!--                        background-color: white;-->
-<!--                        border-radius: 2px;-->
-<!--                        position: relative;"-->
-<!--                 data-cell-index="<%#= i %>">-->
-<!--            </div>-->
-          <%# end %>
-<!--        </div>-->
-      </div>
+    <div class="canvas-area flex-grow-1"
+         style="position: relative; overflow: auto;"
+         data-canvas-target="canvasContainer"
+    >
     </div>
 
   </div>
