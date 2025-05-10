@@ -10,22 +10,6 @@
     <div class="d-flex justify-content-between align-items-center">
       <div class="d-flex align-items-center">
         <h5 class="mb-0 me-3" style="color: #2E7D32;"><%= @project.title %></h5>
-<!--        <div class="btn-group me-3">-->
-<!--          <button class="btn btn-outline-secondary btn-sm">-->
-<!--            <i class="fas fa-undo"></i>-->
-<!--          </button>-->
-<!--          <button class="btn btn-outline-secondary btn-sm">-->
-<!--            <i class="fas fa-redo"></i>-->
-<!--          </button>-->
-<!--        </div>-->
-<!--        <div class="btn-group">-->
-<!--          <button class="btn btn-outline-secondary btn-sm">-->
-<!--            <i class="fas fa-plus"></i> Zoom In-->
-<!--          </button>-->
-<!--          <button class="btn btn-outline-secondary btn-sm">-->
-<!--            <i class="fas fa-minus"></i> Zoom Out-->
-<!--          </button>-->
-<!--        </div>-->
       </div>
       <div>
         <button class="btn btn-success btn-sm">
@@ -54,8 +38,6 @@
                  data-canvas-start-param="<%= species.start_crop_time %>"
                  data-canvas-end-param="<%= species.end_crop_time %>">
               <div class="d-flex align-items-center">
-<!--                <div class="species-color me-2" -->
-<!--                     style="width: 24px; height: 24px; background-color: #2E7D32; border-radius: 4px;"></div>-->
                 <div>
                   <div class="fw-medium"><%= species.name %></div>
                   <small class="text-muted"><%= species.layer_name %></small>
@@ -73,7 +55,6 @@
          data-canvas-target="canvasContainer"
     >
     </div>
-
   </div>
 </div>
 

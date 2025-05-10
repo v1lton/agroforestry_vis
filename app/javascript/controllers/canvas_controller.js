@@ -22,6 +22,9 @@ export default class extends Controller {
   /** @type {Konva.Layer} The Konva layer on which nodes and lines are drawn. */
   #layer
 
+  /** @type {Konva.Layer} The Konva layer for axis rulers. */
+  #rulerLayer
+
   /** @type {Map<string, Species>} Map of species ID to Species instances. */
   #species = new Map()
 
@@ -36,14 +39,8 @@ export default class extends Controller {
   /** @type {number} Height of the canvas stage in pixels. */
   #STAGE_HEIGHT = 500
 
-  /** @type {number} Width of the planting site in meters. */
-  #SITE_WIDTH = 20
-
   /** @type {number} Vertical tolerance in pixels for species overlap detection. */
   #Y_TOLERANCE = 10
-
-  /** @type {number} Pixel-to-meter conversion factor. */
-  #METER_IN_PIXELS = this.#STAGE_WIDTH / this.#SITE_WIDTH
 
   /**
    * Stimulus connect lifecycle method. Sets up the canvas stage and layer.
@@ -51,7 +48,7 @@ export default class extends Controller {
   connect()  {
     this.#setupStage();
     this.#setupLayer();
-    // this.#setupTreeRow()
+    this.#setupTreeRow()
     // this.#addEventListeners();
   }
 
@@ -62,7 +59,7 @@ export default class extends Controller {
       y: 10,
       name: params.name,
       layer: params.layer,
-      spacing: params.spacing * this.#METER_IN_PIXELS,
+      spacing: params.spacing, // params.spacing * this.#METER_IN_PIXELS
       start_crop: params.start,
       end_crop: params.end
     })
@@ -94,14 +91,21 @@ export default class extends Controller {
    * @private
    */
   #setupLayer() {
+    // Add layer to stage. We can't define layer's size
     this.#layer = new Konva.Layer();
     this.#stage.add(this.#layer);
 
+    const marginX = this.#STAGE_WIDTH * 0.05;
+    const marginY = this.#STAGE_HEIGHT  * 0.05;
+    const gridWidth = this.#STAGE_WIDTH * 0.9;
+    const gridHeight = this.#STAGE_HEIGHT * 0.9;
+
     // Horizontal lines
-    const gridSizeY = this.#STAGE_HEIGHT / this.heightValue;
-    for (let i = 0; i <= this.#STAGE_HEIGHT; i += gridSizeY) {
+    const gridSizeY = gridHeight / this.heightValue;
+    for (let i = 0; i <= this.heightValue; i++) {
+      const y = marginY + i * gridSizeY;
       const line = new Konva.Line({
-        points: [0, i, this.#STAGE_WIDTH, i],
+        points: [marginX, y, marginX + gridWidth, y],
         stroke: "#e0e0e0",
         strokeWidth: 1
       });
@@ -109,15 +113,60 @@ export default class extends Controller {
     }
 
     // Vertical lines
-    const gridSizeX = this.#STAGE_WIDTH / this.widthValue;
-    for (let i = 0; i <= this.#STAGE_WIDTH; i += gridSizeX) {
+    const gridSizeX = gridWidth / this.widthValue;
+    for (let i = 0; i <= this.widthValue; i++) {
+      const x = marginX + i * gridSizeX;
       const line = new Konva.Line({
-        points: [i, 0, i, this.#STAGE_HEIGHT],
+        points: [x, marginY, x, marginY + gridHeight],
         stroke: "#e0e0e0",
         strokeWidth: 1
       });
       this.#layer.add(line);
     }
+
+    // Add ruler layer
+    // this.#rulerLayer = new Konva.Layer();
+    // this.#stage.add(this.#rulerLayer);
+    //
+    // // Ruler dimensions and offsets
+    // const rulerOffsetX = (this.#STAGE_WIDTH - layerWidth) / 2;
+    // const rulerOffsetY = (this.#STAGE_HEIGHT - layerHeight) / 2;
+    //
+    // // Horizontal ruler (top)
+    // for (let i = 0; i <= this.widthValue; i++) {
+    //   const x = rulerOffsetX + (i * (layerWidth / this.widthValue));
+    //   this.#rulerLayer.add(new Konva.Line({
+    //     points: [x, rulerOffsetY - 5, x, rulerOffsetY],
+    //     stroke: '#333',
+    //     strokeWidth: 1,
+    //   }));
+    //   this.#rulerLayer.add(new Konva.Text({
+    //     x: x + 2,
+    //     y: rulerOffsetY - 20,
+    //     text: `${i}m`,
+    //     fontSize: 10,
+    //     fill: '#333',
+    //   }));
+    // }
+    //
+    // // Vertical ruler (left)
+    // for (let i = 0; i <= this.heightValue; i++) {
+    //   const y = rulerOffsetY + (i * (layerHeight / this.heightValue));
+    //   this.#rulerLayer.add(new Konva.Line({
+    //     points: [rulerOffsetX - 5, y, rulerOffsetX, y],
+    //     stroke: '#333',
+    //     strokeWidth: 1,
+    //   }));
+    //   this.#rulerLayer.add(new Konva.Text({
+    //     x: rulerOffsetX - 25,
+    //     y: y - 5,
+    //     text: `${i}m`,
+    //     fontSize: 10,
+    //     fill: '#333',
+    //   }));
+    // }
+    //
+    // this.#rulerLayer.draw();
   }
 
   #setupTreeRow() {
