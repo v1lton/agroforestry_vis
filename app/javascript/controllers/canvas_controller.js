@@ -11,7 +11,8 @@ export default class extends Controller {
 
   static values = {
     width: Number,
-    height: Number
+    height: Number,
+    rowSpacing: { type: Number },
   }
 
   // Private Fields
@@ -48,7 +49,7 @@ export default class extends Controller {
   connect()  {
     this.#setupStage();
     this.#setupLayer();
-    this.#setupTreeRow()
+    this.#setupTreeRows()
     // this.#addEventListeners();
   }
 
@@ -123,60 +124,26 @@ export default class extends Controller {
       });
       this.#layer.add(line);
     }
-
-    // Add ruler layer
-    // this.#rulerLayer = new Konva.Layer();
-    // this.#stage.add(this.#rulerLayer);
-    //
-    // // Ruler dimensions and offsets
-    // const rulerOffsetX = (this.#STAGE_WIDTH - layerWidth) / 2;
-    // const rulerOffsetY = (this.#STAGE_HEIGHT - layerHeight) / 2;
-    //
-    // // Horizontal ruler (top)
-    // for (let i = 0; i <= this.widthValue; i++) {
-    //   const x = rulerOffsetX + (i * (layerWidth / this.widthValue));
-    //   this.#rulerLayer.add(new Konva.Line({
-    //     points: [x, rulerOffsetY - 5, x, rulerOffsetY],
-    //     stroke: '#333',
-    //     strokeWidth: 1,
-    //   }));
-    //   this.#rulerLayer.add(new Konva.Text({
-    //     x: x + 2,
-    //     y: rulerOffsetY - 20,
-    //     text: `${i}m`,
-    //     fontSize: 10,
-    //     fill: '#333',
-    //   }));
-    // }
-    //
-    // // Vertical ruler (left)
-    // for (let i = 0; i <= this.heightValue; i++) {
-    //   const y = rulerOffsetY + (i * (layerHeight / this.heightValue));
-    //   this.#rulerLayer.add(new Konva.Line({
-    //     points: [rulerOffsetX - 5, y, rulerOffsetX, y],
-    //     stroke: '#333',
-    //     strokeWidth: 1,
-    //   }));
-    //   this.#rulerLayer.add(new Konva.Text({
-    //     x: rulerOffsetX - 25,
-    //     y: y - 5,
-    //     text: `${i}m`,
-    //     fontSize: 10,
-    //     fill: '#333',
-    //   }));
-    // }
-    //
-    // this.#rulerLayer.draw();
   }
 
-  #setupTreeRow() {
-    const treeRow = new TreeRow({
-      originX: 0,
-      originY: 250,
-      endX: this.#STAGE_WIDTH,
-      endY: 250
-    })
-    this.#layer.add(treeRow.shapeRepresentation)
+  #setupTreeRows() {
+    const marginX = this.#STAGE_WIDTH * 0.05;
+    const gridWidth = this.#STAGE_WIDTH * 0.9;
+
+    const marginY = this.#STAGE_HEIGHT  * 0.05;
+    const gridHeight = this.#STAGE_HEIGHT * 0.9;
+    const gridSizeY = gridHeight / this.heightValue;
+
+    for (let i = 1; i <= this.heightValue; i += this.rowSpacingValue) {
+      const yPosition = marginY + gridSizeY * i
+      const treeRow = new TreeRow({
+        originX: marginX,
+        originY: yPosition,
+        endX: marginX + gridWidth,
+        endY: yPosition
+      });
+      this.#layer.add(treeRow.shapeRepresentation);
+    }
   }
 
   /**

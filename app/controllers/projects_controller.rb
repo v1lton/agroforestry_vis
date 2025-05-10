@@ -73,7 +73,7 @@ class ProjectsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def project_params
-      params.require(:project).permit(:title, :width, :height, species_ids: [])
+      params.require(:project).permit(:title, :width, :height, :row_spacing, species_ids: [])
     end
 
   def set_species

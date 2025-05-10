@@ -27,6 +27,11 @@
   </div>
 
   <div class="mb-4">
+    <%= form.label :row_spacing, "Espaçamento Entre Linhas", class: "form-label fw-bold" %>
+    <%= form.number_field :row_spacing, class: "form-control", placeholder: "Espaçamento em metros" %>
+  </div>
+
+  <div class="mb-4">
     <%= form.label :species_ids, "Selecionar espécies do SAF", class: "form-label fw-bold" %>
     <div class="card">
       <div class="card-body">
