@@ -29,12 +29,6 @@ export default class extends Controller {
 
   // Constants
 
-  /** @type {number} Width of the canvas stage in pixels. */
-  #STAGE_WIDTH = 1000
-
-  /** @type {number} Height of the canvas stage in pixels. */
-  #STAGE_HEIGHT = 500
-
   /** @type {number} Vertical tolerance in pixels for species overlap detection. */
   #Y_TOLERANCE = 10
 
@@ -45,17 +39,17 @@ export default class extends Controller {
     this.#setupStage();
     this.#setupLayer();
     this.#setupTreeRows()
-    // this.#addEventListeners();
+    this.#addEventListeners();
   }
 
   addSpecies(event) {
     const params = event.params
     const species = new Species({
-      x: 10,
-      y: 10,
+      x: this.#marginX + (this.#gridWidth / 2), // Center horizontally
+      y: this.#marginY + this.#pixelsPerMeter, // Place on first tree row
       name: params.name,
       layer: params.layer,
-      spacing: params.spacing * this.#pixelsPerMeter, // Convert meters to pixels
+      spacing: params.spacing * this.#pixelsPerMeter,
       start_crop: params.start,
       end_crop: params.end
     })
@@ -188,6 +182,7 @@ export default class extends Controller {
    */
   #addEventListeners = () => {
     this.#layer.on("dragmove", this.#handleDragMove);
+    this.#layer.on("dragend", this.#handleDragEnd);
   }
 
   /**
@@ -233,6 +228,53 @@ export default class extends Controller {
       } else if (existingLine) {
         existingLine.destroy();
         this.#connections.delete(key);
+      }
+    });
+
+    this.#layer.batchDraw();
+  }
+
+  /**
+   * Handles dragend events, snapping species to the nearest tree row.
+   * @param {Object} e - Konva event object.
+   * @private
+   */
+  #handleDragEnd = (e) => {
+    const targetSpecies = e.target;
+    const currentY = targetSpecies.y();
+    
+    // Calculate all possible tree row positions
+    const treeRowPositions = [];
+    for (let i = 1; i <= this.heightValue; i += this.rowSpacingValue) {
+      treeRowPositions.push(this.#marginY + (i * this.#pixelsPerMeter));
+    }
+
+    // Find the nearest tree row position
+    const nearestRowY = treeRowPositions.reduce((nearest, current) => {
+      return Math.abs(current - currentY) < Math.abs(nearest - currentY) ? current : nearest;
+    });
+
+    // Snap to the nearest row
+    targetSpecies.y(nearestRowY);
+
+    // Ensure x position stays within grid bounds
+    const x = Math.max(this.#marginX, Math.min(targetSpecies.x(), this.#marginX + this.#gridWidth));
+    targetSpecies.x(x);
+
+    // Update all connections for this species
+    this.#layer.find(".speciesRepresentation").forEach((otherSpecies) => {
+      if (otherSpecies === targetSpecies) return;
+
+      const key = this.#connectionKey(targetSpecies, otherSpecies);
+      const existingLine = this.#connections.get(key);
+
+      if (existingLine) {
+        existingLine.points([
+          targetSpecies.getAbsolutePosition().x,
+          targetSpecies.getAbsolutePosition().y,
+          otherSpecies.getAbsolutePosition().x,
+          otherSpecies.getAbsolutePosition().y
+        ]);
       }
     });
 
