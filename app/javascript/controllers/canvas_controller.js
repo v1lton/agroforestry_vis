@@ -215,7 +215,8 @@ export default class extends Controller {
             listening: false
           });
           this.#layer.add(line);
-          line.moveToBottom();
+          // Bring all species to the top to keep them in front of line
+          this.#layer.find(".speciesRepresentation").forEach(species => species.moveToTop());
           this.#connections.set(key, line);
         } else {
           existingLine.points([
