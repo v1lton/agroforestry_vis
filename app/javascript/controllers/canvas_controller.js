@@ -209,7 +209,10 @@ export default class extends Controller {
               otherSpecies.getAbsolutePosition().y
             ],
             stroke: 'red',
-            strokeWidth: 20,
+            strokeWidth: Math.min(
+              this.#species.get(targetSpecies._id).radius,
+              this.#species.get(otherSpecies._id).radius
+            ) * 2,
             opacity: 0.5,
             name: 'connectorLine',
             listening: false

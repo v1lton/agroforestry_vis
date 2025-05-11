@@ -67,7 +67,7 @@ export class Species {
     });
 
     const circle = new Konva.Circle({
-      radius: 10,
+      radius: this.radius,
       fill: this.#color,
       name: "fillShape",
     });
@@ -104,5 +104,22 @@ export class Species {
       low_layer: "red"
     };
     return layerColors[this.layer] || "gray";
+  }
+
+  /**
+   * Gets the radius associated with the species layer and crop period.
+   * @private
+   * @returns {number} The radius for the layer and crop period.
+   */
+  get radius() {
+    const crop = parseFloat(this.end_crop);
+    const radiusTable = {
+      emergent_layer: [6, 8, 10],
+      high_layer: [5, 7, 9],
+      medium_layer: [4, 6, 8],
+      low_layer: [3, 5, 7]
+    };
+    const periodIndex = crop <= 2 ? 0 : crop <= 4 ? 1 : 2;
+    return radiusTable[this.layer]?.[periodIndex] || 4;
   }
 }
