@@ -26,6 +26,8 @@ export default class extends Controller {
   #gridHeight = 0
   #marginX = 0
   #marginY = 0
+  #menuNode = null
+  #currentSpecies = null
 
   // Constants
 
@@ -40,6 +42,13 @@ export default class extends Controller {
     this.#setupLayer();
     this.#setupTreeRows()
     this.#addEventListeners();
+    this.#setupContextMenu();
+  }
+
+  disconnect() {
+    if (this.#menuNode) {
+      document.body.removeChild(this.#menuNode);
+    }
   }
 
   addSpecies(event) {
@@ -53,7 +62,7 @@ export default class extends Controller {
       start_crop: params.start,
       end_crop: params.end
     })
-
+    
     this.#layer.add(species.shapeRepresentation)
     this.#species.set(species.id, species)
   }
@@ -183,6 +192,7 @@ export default class extends Controller {
   #addEventListeners = () => {
     this.#layer.on("dragmove", this.#handleDragMove);
     this.#layer.on("dragend", this.#handleDragEnd);
+    this.#stage.on("contextmenu", this.#handleContextMenu);
   }
 
   /**
@@ -328,5 +338,98 @@ export default class extends Controller {
    */
   #hasProductionOverlap(speciesA, speciesB) {
     return speciesA.start_crop < speciesB.end_crop && speciesB.start_crop < speciesA.end_crop;
+  }
+
+  #setupContextMenu() {
+    // Create menu container
+    this.#menuNode = document.createElement('div');
+    this.#menuNode.id = 'species-context-menu';
+    this.#menuNode.style.display = 'none';
+    this.#menuNode.style.position = 'absolute';
+    this.#menuNode.style.width = '120px';
+    this.#menuNode.style.backgroundColor = 'white';
+    this.#menuNode.style.boxShadow = '0 0 5px grey';
+    this.#menuNode.style.borderRadius = '3px';
+    this.#menuNode.style.zIndex = '1000';
+
+    // Create delete button
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Remover';
+    deleteButton.style.width = '100%';
+    deleteButton.style.backgroundColor = 'white';
+    deleteButton.style.border = 'none';
+    deleteButton.style.margin = '0';
+    deleteButton.style.padding = '10px';
+    deleteButton.style.cursor = 'pointer';
+    deleteButton.style.textAlign = 'left';
+    deleteButton.style.color = '#dc3545'; // Bootstrap's danger red color
+
+    // Add hover effects
+    deleteButton.addEventListener('mouseover', () => {
+      deleteButton.style.backgroundColor = '#f8f9fa';
+    });
+    deleteButton.addEventListener('mouseout', () => {
+      deleteButton.style.backgroundColor = 'white';
+    });
+
+    // Add click handler
+    deleteButton.addEventListener('click', () => {
+      if (this.#currentSpecies) {
+        // Remove all connections for this species
+        this.#layer.find(".speciesRepresentation").forEach((otherSpecies) => {
+          if (otherSpecies === this.#currentSpecies) return;
+          const key = this.#connectionKey(this.#currentSpecies, otherSpecies);
+          const existingLine = this.#connections.get(key);
+          if (existingLine) {
+            existingLine.destroy();
+            this.#connections.delete(key);
+          }
+        });
+
+        // Remove the species
+        this.#species.delete(this.#currentSpecies._id);
+        this.#currentSpecies.destroy();
+        this.#layer.batchDraw();
+      }
+      this.#menuNode.style.display = 'none';
+    });
+
+    // Add button to menu
+    this.#menuNode.appendChild(deleteButton);
+    document.body.appendChild(this.#menuNode);
+
+    // Hide menu on document click
+    window.addEventListener('click', () => {
+      this.#menuNode.style.display = 'none';
+    });
+  }
+
+  #handleContextMenu = (e) => {
+    // prevent default behavior
+    e.evt.preventDefault();
+    
+    // if we clicked on empty space, do nothing
+    if (e.target === this.#stage) {
+      return;
+    }
+
+    // Check if we clicked on a species or its parent group
+    const target = e.target;
+    const isSpecies = target.hasName('speciesRepresentation') || 
+                     (target.getParent() && target.getParent().hasName('speciesRepresentation'));
+
+    if (isSpecies) {
+      this.#currentSpecies = target.hasName('speciesRepresentation') ? target : target.getParent();
+      
+      // show menu
+      this.#menuNode.style.display = 'initial';
+      const containerRect = this.#stage.container().getBoundingClientRect();
+      const pointerPos = this.#stage.getPointerPosition();
+      
+      this.#menuNode.style.top = 
+        containerRect.top + pointerPos.y + 4 + 'px';
+      this.#menuNode.style.left = 
+        containerRect.left + pointerPos.x + 4 + 'px';
+    }
   }
 }
