@@ -10,27 +10,22 @@ export default class extends Controller {
   static targets = ["cell", "canvasContainer"]
 
   static values = {
-    width: Number,
-    height: Number,
+    width: Number,  // width in meters
+    height: Number, // height in meters
     rowSpacing: { type: Number },
   }
 
   // Private Fields
-
-  /** @type {Konva.Stage} The main canvas stage. */
   #stage
-
-  /** @type {Konva.Layer} The Konva layer on which nodes and lines are drawn. */
   #layer
-
-  /** @type {Konva.Layer} The Konva layer for axis rulers. */
   #rulerLayer
-
-  /** @type {Map<string, Species>} Map of species ID to Species instances. */
   #species = new Map()
-
-  /** @type {Map<string, Konva.Line>} Map of connection keys to their corresponding Konva line. */
   #connections = new Map()
+  #pixelsPerMeter = 0 // Will store our calculated ratio
+  #gridWidth = 0
+  #gridHeight = 0
+  #marginX = 0
+  #marginY = 0
 
   // Constants
 
@@ -60,7 +55,7 @@ export default class extends Controller {
       y: 10,
       name: params.name,
       layer: params.layer,
-      spacing: params.spacing, // params.spacing * this.#METER_IN_PIXELS
+      spacing: params.spacing * this.#pixelsPerMeter, // Convert meters to pixels
       start_crop: params.start,
       end_crop: params.end
     })
@@ -75,16 +70,39 @@ export default class extends Controller {
    */
   #setupStage() {
     const containerRect = this.canvasContainerTarget.getBoundingClientRect()
-    this.#STAGE_WIDTH = containerRect.width
-    this.#STAGE_HEIGHT = containerRect.height
+    const containerWidth = containerRect.width
+    const containerHeight = containerRect.height
 
-    // Stage's size is matching the div container's size on initialization.
-    // It is NOT, for now, listening to resize.
+    // Calculate the maximum available space for the grid
+    const maxGridWidth = containerWidth * 0.95  // 95% of container width
+    const maxGridHeight = containerHeight * 0.95 // 95% of container height
+
+    // Calculate pixels per meter for both dimensions
+    const widthRatio = maxGridWidth / this.widthValue
+    const heightRatio = maxGridHeight / this.heightValue
+
+    // Use the smaller ratio to ensure the grid fits in both dimensions
+    this.#pixelsPerMeter = Math.min(widthRatio, heightRatio)
+
+    // Calculate actual grid dimensions in pixels
+    const gridWidth = this.widthValue * this.#pixelsPerMeter
+    const gridHeight = this.heightValue * this.#pixelsPerMeter
+
+    // Calculate margins to center the grid
+    const marginX = (containerWidth - gridWidth) / 2
+    const marginY = (containerHeight - gridHeight) / 2
+
     this.#stage = new Konva.Stage({
       container: this.canvasContainerTarget,
-      width: this.#STAGE_WIDTH,
-      height: this.#STAGE_HEIGHT,
+      width: containerWidth,
+      height: containerHeight,
     });
+
+    // Store grid dimensions and margins for use in other methods
+    this.#gridWidth = gridWidth
+    this.#gridHeight = gridHeight
+    this.#marginX = marginX
+    this.#marginY = marginY
   }
 
   /**
@@ -92,21 +110,15 @@ export default class extends Controller {
    * @private
    */
   #setupLayer() {
-    // Add layer to stage. We can't define layer's size
     this.#layer = new Konva.Layer();
     this.#stage.add(this.#layer);
 
-    const marginX = this.#STAGE_WIDTH * 0.05;
-    const marginY = this.#STAGE_HEIGHT  * 0.05;
-    const gridWidth = this.#STAGE_WIDTH * 0.9;
-    const gridHeight = this.#STAGE_HEIGHT * 0.9;
-
+    // Draw grid using the calculated dimensions
     // Horizontal lines
-    const gridSizeY = gridHeight / this.heightValue;
     for (let i = 0; i <= this.heightValue; i++) {
-      const y = marginY + i * gridSizeY;
+      const y = this.#marginY + (i * this.#pixelsPerMeter);
       const line = new Konva.Line({
-        points: [marginX, y, marginX + gridWidth, y],
+        points: [this.#marginX, y, this.#marginX + this.#gridWidth, y],
         stroke: "#e0e0e0",
         strokeWidth: 1
       });
@@ -114,32 +126,56 @@ export default class extends Controller {
     }
 
     // Vertical lines
-    const gridSizeX = gridWidth / this.widthValue;
     for (let i = 0; i <= this.widthValue; i++) {
-      const x = marginX + i * gridSizeX;
+      const x = this.#marginX + (i * this.#pixelsPerMeter);
       const line = new Konva.Line({
-        points: [x, marginY, x, marginY + gridHeight],
+        points: [x, this.#marginY, x, this.#marginY + this.#gridHeight],
         stroke: "#e0e0e0",
         strokeWidth: 1
       });
       this.#layer.add(line);
     }
+
+    // Add meter labels
+    this.#addMeterLabels();
+  }
+
+  #addMeterLabels() {
+    // Add horizontal (width) labels
+    for (let i = 0; i <= this.widthValue; i++) {
+      const x = this.#marginX + (i * this.#pixelsPerMeter);
+      const text = new Konva.Text({
+        x: x - 10,
+        y: this.#marginY + this.#gridHeight + 5,
+        text: `${i}m`,
+        fontSize: 12,
+        fill: '#666'
+      });
+      this.#layer.add(text);
+    }
+
+    // Add vertical (height) labels
+    for (let i = 0; i <= this.heightValue; i++) {
+      const y = this.#marginY + (i * this.#pixelsPerMeter);
+      const text = new Konva.Text({
+        x: this.#marginX - 25,
+        y: y - 6,
+        text: `${i}m`,
+        fontSize: 12,
+        fill: '#666'
+      });
+      this.#layer.add(text);
+    }
   }
 
   #setupTreeRows() {
-    const marginX = this.#STAGE_WIDTH * 0.05;
-    const gridWidth = this.#STAGE_WIDTH * 0.9;
-
-    const marginY = this.#STAGE_HEIGHT  * 0.05;
-    const gridHeight = this.#STAGE_HEIGHT * 0.9;
-    const gridSizeY = gridHeight / this.heightValue;
-
+    // Calculate tree row positions using the uniform scale
     for (let i = 1; i <= this.heightValue; i += this.rowSpacingValue) {
-      const yPosition = marginY + gridSizeY * i
+      const yPosition = this.#marginY + (i * this.#pixelsPerMeter)
       const treeRow = new TreeRow({
-        originX: marginX,
+        originX: this.#marginX,
         originY: yPosition,
-        endX: marginX + gridWidth,
+        endX: this.#marginX + this.#gridWidth,
         endY: yPosition
       });
       this.#layer.add(treeRow.shapeRepresentation);
