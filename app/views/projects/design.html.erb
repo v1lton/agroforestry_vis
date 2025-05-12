@@ -27,22 +27,29 @@
       <div class="p-3">
         <h6 class="text-muted mb-3">ESPÉCIES ESCOLHIDAS</h6>
         <div class="species-list">
-          <% @project_species.each do |species| %>
-            <div class="species-item p-2 mb-2 rounded" 
-                 style="cursor: grab; border: 1px solid #e9ecef;"
-                 data-species-id="<%= species.id %>"
-                 data-species-name="<%= species.scientific_name %>"
-                 data-action="click->canvas#addSpecies"
-                 data-canvas-name-param="<%= species.name%>"
-                 data-canvas-layer-param="<%= species.layer %>"
-                 data-canvas-spacing-param="<%= species.spacing %>"
-                 data-canvas-start-param="<%= species.start_crop_time %>"
-                 data-canvas-end-param="<%= species.end_crop_time %>">
-              <div class="d-flex align-items-center mb-1">
-                <div class="species-color-indicator" style="width: 10px; height: 10px; border-radius: 50%; background-color: <%= species.layer_color %>; margin-right: 8px;"></div>
-                <div class="fw-medium"><%= species.name %></div>
+          <% @project_species.group_by(&:layer).sort_by { |layer, _| layer }.each do |layer, species| %>
+            <div class="layer-group mb-3">
+              <div class="layer-header d-flex align-items-center mb-2">
+                <h6 class="mb-0 text-muted"><%= species.first.layer_name.upcase %></h6>
               </div>
-              <small class="text-muted"><%= species.layer_name %></small>
+              <% species.each do |species_item| %>
+                <div class="species-item p-2 mb-2 rounded" 
+                     style="cursor: grab; border: 1px solid #e9ecef;"
+                     data-species-id="<%= species_item.id %>"
+                     data-species-name="<%= species_item.scientific_name %>"
+                     data-action="click->canvas#addSpecies"
+                     data-canvas-name-param="<%= species_item.name%>"
+                     data-canvas-layer-param="<%= species_item.layer %>"
+                     data-canvas-spacing-param="<%= species_item.spacing %>"
+                     data-canvas-start-param="<%= species_item.start_crop_time %>"
+                     data-canvas-end-param="<%= species_item.end_crop_time %>">
+                  <div class="d-flex align-items-center mb-1">
+                    <div class="species-color-indicator" style="width: 10px; height: 10px; border-radius: 50%; background-color: <%= species_item.layer_color %>; margin-right: 8px;"></div>
+                    <div class="fw-medium"><%= species_item.name %></div>
+                  </div>
+                  <small class="text-muted"><%= species_item.production_description %></small>
+                </div>
+              <% end %>
             </div>
           <% end %>
         </div>
