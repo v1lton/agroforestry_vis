@@ -43,4 +43,19 @@ class Species < ApplicationRecord
       layer
     end
   end
+
+  def layer_color
+    case layer
+    when 'emergent_layer'
+      'blue'
+    when 'high_layer'
+      'green'
+    when 'medium_layer'
+      'yellow'
+    when 'low_layer'
+      'red'
+    else
+      'gray'
+    end
+  end
 end

@@ -38,12 +38,11 @@
                  data-canvas-spacing-param="<%= species.spacing %>"
                  data-canvas-start-param="<%= species.start_crop_time %>"
                  data-canvas-end-param="<%= species.end_crop_time %>">
-              <div class="d-flex align-items-center">
-                <div>
-                  <div class="fw-medium"><%= species.name %></div>
-                  <small class="text-muted"><%= species.layer_name %></small>
-                </div>
+              <div class="d-flex align-items-center mb-1">
+                <div class="species-color-indicator" style="width: 10px; height: 10px; border-radius: 50%; background-color: <%= species.layer_color %>; margin-right: 8px;"></div>
+                <div class="fw-medium"><%= species.name %></div>
               </div>
+              <small class="text-muted"><%= species.layer_name %></small>
             </div>
           <% end %>
         </div>
