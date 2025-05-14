@@ -437,40 +437,42 @@ export default class extends Controller {
   }
 
   /**
-   * Exports the current canvas state as a PDF file.
+   * Exports the current canvas state as a PNG image.
    */
-  saveAsPDF() {
-    if (typeof jsPDF === 'undefined') {
-      console.error('jsPDF library is not loaded');
-      alert('PDF export is not available. Please try again later.');
-      return;
-    }
-
-    // Create a new PDF document
-    const pdf = new jsPDF('l', 'px', [this.#stage.width(), this.#stage.height()]);
-    pdf.setTextColor('#000000');
-    
-    // First add texts
-    this.#stage.find('Text').forEach((text) => {
-      const size = text.fontSize() / 0.75; // convert pixels to points
-      pdf.setFontSize(size);
-      pdf.text(text.text(), text.x(), text.y(), {
-        baseline: 'top',
-        angle: -text.getAbsoluteRotation(),
-      });
+  saveAsImage() {
+    // Create a white background rectangle
+    const background = new Konva.Rect({
+      x: 0,
+      y: 0,
+      width: this.#stage.width(),
+      height: this.#stage.height(),
+      fill: 'white',
+      listening: false
     });
 
-    // Then add the canvas image
-    pdf.addImage(
-      this.#stage.toDataURL({ pixelRatio: 2 }),
-      0,
-      0,
-      this.#stage.width(),
-      this.#stage.height()
-    );
+    // Add the background to the layer
+    this.#layer.add(background);
+    background.moveToBottom(); // Ensure it's behind all other elements
 
-    // Save the PDF
-    pdf.save('agroforestry-design.pdf');
+    // Get the data URL of the stage
+    const dataURL = this.#stage.toDataURL({ 
+      pixelRatio: 2, // Higher quality
+      mimeType: 'image/png'
+    });
+
+    // Remove the background
+    background.destroy();
+    this.#layer.batchDraw();
+
+    // Create a temporary link element
+    const link = document.createElement('a');
+    link.download = 'agroforestry-design.png';
+    link.href = dataURL;
+
+    // Trigger the download
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 
   /**
