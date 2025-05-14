@@ -18,7 +18,6 @@ export default class extends Controller {
   // Private Fields
   #stage
   #layer
-  #rulerLayer
   #species = new Map()
   #connections = new Map()
   #pixelsPerMeter = 0 // Will store our calculated ratio
@@ -28,6 +27,8 @@ export default class extends Controller {
   #marginY = 0
   #menuNode = null
   #currentSpecies = null
+
+  #rowPositions = []
 
   // Constants
 
@@ -43,6 +44,7 @@ export default class extends Controller {
     this.#setupTreeRows()
     this.#addEventListeners();
     this.#setupContextMenu();
+    this.#centerScroll();
   }
 
   disconnect() {
@@ -62,7 +64,7 @@ export default class extends Controller {
       start_crop: params.start,
       end_crop: params.end
     })
-    
+
     this.#layer.add(species.shapeRepresentation)
     this.#species.set(species.id, species)
   }
@@ -92,13 +94,13 @@ export default class extends Controller {
     const gridHeight = this.heightValue * this.#pixelsPerMeter
 
     // Calculate margins to center the grid
-    const marginX = (containerWidth - gridWidth) / 2
-    const marginY = (containerHeight - gridHeight) / 2
+    const marginX = (containerWidth - gridWidth + 100) / 2
+    const marginY = (containerHeight - gridHeight + 100) / 2
 
     this.#stage = new Konva.Stage({
       container: this.canvasContainerTarget,
-      width: containerWidth,
-      height: containerHeight,
+      width: containerWidth + 100,
+      height: containerHeight + 100,
     });
 
     // Store grid dimensions and margins for use in other methods
@@ -175,6 +177,7 @@ export default class extends Controller {
     // Calculate tree row positions using the uniform scale
     for (let i = 1; i <= this.heightValue; i += this.rowSpacingValue) {
       const yPosition = this.#marginY + (i * this.#pixelsPerMeter)
+      this.#rowPositions.push(yPosition);
       const treeRow = new TreeRow({
         originX: this.#marginX,
         originY: yPosition,
@@ -431,5 +434,57 @@ export default class extends Controller {
       this.#menuNode.style.left = 
         containerRect.left + pointerPos.x + 4 + 'px';
     }
+  }
+
+  /**
+   * Exports the current canvas state as a PDF file.
+   */
+  saveAsPDF() {
+    if (typeof jsPDF === 'undefined') {
+      console.error('jsPDF library is not loaded');
+      alert('PDF export is not available. Please try again later.');
+      return;
+    }
+
+    // Create a new PDF document
+    const pdf = new jsPDF('l', 'px', [this.#stage.width(), this.#stage.height()]);
+    pdf.setTextColor('#000000');
+    
+    // First add texts
+    this.#stage.find('Text').forEach((text) => {
+      const size = text.fontSize() / 0.75; // convert pixels to points
+      pdf.setFontSize(size);
+      pdf.text(text.text(), text.x(), text.y(), {
+        baseline: 'top',
+        angle: -text.getAbsoluteRotation(),
+      });
+    });
+
+    // Then add the canvas image
+    pdf.addImage(
+      this.#stage.toDataURL({ pixelRatio: 2 }),
+      0,
+      0,
+      this.#stage.width(),
+      this.#stage.height()
+    );
+
+    // Save the PDF
+    pdf.save('agroforestry-design.pdf');
+  }
+
+  /**
+   * Centers the scroll position of the canvas container to show the main grid area.
+   * @private
+   */
+  #centerScroll() {
+    const container = this.canvasContainerTarget;
+    const scrollX = (container.scrollWidth - container.clientWidth) / 2;
+    const scrollY = (container.scrollHeight - container.clientHeight) / 2;
+    
+    container.scrollTo({
+      left: scrollX,
+      top: scrollY
+    });
   }
 }

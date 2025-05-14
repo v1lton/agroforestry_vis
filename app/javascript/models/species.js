@@ -47,7 +47,6 @@ export class Species {
     return this.group.getClientRect();
   }
 
-
   // MARK: - Shape Representation
 
   /**
@@ -121,5 +120,14 @@ export class Species {
     };
     const periodIndex = crop <= 2 ? 0 : crop <= 4 ? 1 : 2;
     return radiusTable[this.layer]?.[periodIndex] || 4;
+  }
+
+  /**
+   * Gets the absolute position of the circle in the shape representation.
+   * @returns {{ x: number, y: number }} The x and y coordinates of the circle.
+   */
+  get circlePosition() {
+    const circle = this.group.findOne(".fillShape");
+    return circle.getAbsolutePosition();
   }
 }
