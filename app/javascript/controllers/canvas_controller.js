@@ -321,8 +321,8 @@ export default class extends Controller {
     if (targetSpecies.layer !== otherSpecies.layer) return false;
     if (!this.#hasProductionOverlap(targetSpecies, otherSpecies)) return false;
 
-    const targetRect = targetSpecies.clientRect;
-    const otherRect = otherSpecies.clientRect;
+    const targetRect = targetSpecies.circlePosition;
+    const otherRect = otherSpecies.circlePosition;
 
     const verticalDistance = Math.abs(otherRect.y - targetRect.y);
     if (verticalDistance > this.#Y_TOLERANCE) return false;
