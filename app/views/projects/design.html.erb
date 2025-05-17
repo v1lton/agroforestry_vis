@@ -31,14 +31,13 @@
     <!-- Left Sidebar - Species Panel -->
     <div class="species-panel bg-white border-end" style="width: 280px; overflow-y: auto;">
       <div class="p-3">
-        <h6 class="text-muted mb-3">ESPÉCIES ESCOLHIDAS</h6>
         <div class="species-list">
           <% @project_species.group_by(&:layer).sort_by { |layer, _| layer }.each do |layer, species| %>
             <div class="layer-group mb-3">
               <div class="layer-header d-flex align-items-center mb-2">
                 <h6 class="mb-0 text-muted"><%= species.first.layer_name.upcase %></h6>
               </div>
-              <% species.each do |species_item| %>
+              <% species.sort_by(&:name).each do |species_item| %>
                 <div class="species-item p-2 mb-2 rounded" 
                      style="cursor: grab; border: 1px solid #e9ecef;"
                      data-species-id="<%= species_item.id %>"
