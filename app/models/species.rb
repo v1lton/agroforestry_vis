@@ -80,9 +80,9 @@ class Species < ApplicationRecord
     end
 
     if start == end_
-      "#{format_value.call(start)}"
+      "#{format_value.call(start)} | #{spacing.to_s.sub(".", ",")} #{"metros".pluralize}"
     else
-      "#{format_value.call(start)} - #{format_value.call(end_)}"
+      "#{format_value.call(start)} - #{format_value.call(end_)} | #{spacing.to_s.sub(".", ",")} #{"metros".pluralize}"
     end
   end
 end
