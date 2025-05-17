@@ -18,17 +18,17 @@
   <div class="row mb-4">
     <div class="col-md-6">
       <%= form.label :width, "Largura (metros)", class: "form-label fw-bold" %>
-      <%= form.number_field :width, class: "form-control", placeholder: "Largura em metros" %>
+      <%= form.number_field :width, class: "form-control", placeholder: "Largura em metros", min: 0, max: 50 %>
     </div>
     <div class="col-md-6">
       <%= form.label :height, "Altura (metros)", class: "form-label fw-bold" %>
-      <%= form.number_field :height, class: "form-control", placeholder: "Altura em metros" %>
+      <%= form.number_field :height, class: "form-control", placeholder: "Altura em metros", min: 0, max: 50 %>
     </div>
   </div>
 
   <div class="mb-4">
     <%= form.label :row_spacing, "Espaçamento Entre Linhas (metros)", class: "form-label fw-bold" %>
-    <%= form.number_field :row_spacing, class: "form-control", placeholder: "Espaçamento em metros" %>
+    <%= form.number_field :row_spacing, class: "form-control", placeholder: "Espaçamento em metros" , min: 1 %>
   </div>
 
   <div class="mb-4">
