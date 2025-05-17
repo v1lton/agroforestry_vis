@@ -51,7 +51,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <% species.each do |species_item| %>
+                  <% species.sort_by(&:name).each do |species_item| %>
                     <tr>
                       <td>
                         <div class="form-check">
