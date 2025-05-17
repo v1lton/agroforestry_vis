@@ -13,6 +13,12 @@
         <h5 class="mb-0 me-3" style="color: #2E7D32;"><%= @project.title %></h5>
       </div>
       <div>
+        <%= link_to edit_project_path(@project),
+                    class: "btn btn-warning btn-sm",
+                    data: { turbo: false },
+                    onclick: "return confirm('Você perderá as alterações atuais no projeto. Deseja continuar?')" do %>
+          <i class="fas fa-edit"></i> Editar
+        <% end %>
         <button class="btn btn-success btn-sm" data-action="canvas#saveAsImage">
           <i class="fas fa-save"></i> Salvar
         </button>

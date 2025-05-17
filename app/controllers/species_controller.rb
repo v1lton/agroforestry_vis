@@ -73,7 +73,6 @@ class SpeciesController < ApplicationController
       :layer,
       :start_crop_time,
       :end_crop_time,
-      :max_height,
       common_names_attributes: [:common_name],
     )
   end
