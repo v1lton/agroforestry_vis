@@ -30,18 +30,27 @@ Agroforestry Vis is being developed as a final thesis project at Centro de Infor
    cd agroforestry-vis
    ```
 
-2. Build and start the containers:
+2. Create a `.env.development` file in the root directory with the following content:
+   ```env
+   DATABASE_HOST=database
+   DATABASE_PORT=5432
+   RAILS_ENV=development
+   POSTGRES_PASSWORD=password
+   POSTGRES_USER=postgres
+   ```
+
+3. Build and start the containers:
    ```bash
    docker-compose build
    docker-compose up
    ```
 
-3. Create and set up the database:
+4. In a new terminal, create and set up the database:
    ```bash
    docker-compose exec app rails db:create db:migrate
    ```
 
-4. Access the application at `http://localhost:3000`
+5. Access the application at `http://localhost:3000`
 
 ## Development
 
@@ -49,7 +58,13 @@ The application runs in a Docker environment with hot-reloading enabled. The sou
 
 ### Database
 
-PostgreSQL is used as the database and runs in a separate container. The database configuration is managed through `config/database.yml` and environment variables.
+PostgreSQL 14 runs in a separate container with the following configuration:
+- Host: database
+- Port: 5432
+- Default user: postgres
+- Password: password (configured in .env.development)
+
+The database data is persisted in a Docker volume named `postgres_data`.
 
 ### Testing
 
@@ -59,22 +74,19 @@ docker-compose exec app rails test
 
 ## Environment Variables
 
-While the project currently doesn't use a `.env` file, it's recommended to add one for better security and configuration management. Here's a suggested `.env` file structure:
+The project uses a `.env.development` file for configuration. Here's the required structure:
 
 ```env
-# Database
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=your_secure_password
-DATABASE_URL=postgres://postgres:your_secure_password@db:5432/app_development
-
-# Rails
+DATABASE_HOST=database
+DATABASE_PORT=5432
 RAILS_ENV=development
-RAILS_MASTER_KEY=your_master_key
+POSTGRES_PASSWORD=password
+POSTGRES_USER=postgres
 ```
 
-Add this file to your `.gitignore` to prevent sensitive information from being committed:
+Make sure to add this file to your `.gitignore` to prevent sensitive information from being committed:
 ```
-.env
+.env.development
 .env.*
 ```
 
