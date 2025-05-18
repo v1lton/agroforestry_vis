@@ -77,11 +77,12 @@ docker-compose exec app rails test
 The project uses a `.env.development` file for configuration. Here's the required structure:
 
 ```env
+DATABASE_NAME=app_dev
+DATABASE_TEST_NAME=app_test
+DATABASE_USER=postgres
+DATABASE_PASSWORD=password
 DATABASE_HOST=database
 DATABASE_PORT=5432
-RAILS_ENV=development
-POSTGRES_PASSWORD=password
-POSTGRES_USER=postgres
 ```
 
 Make sure to add this file to your `.gitignore` to prevent sensitive information from being committed:
