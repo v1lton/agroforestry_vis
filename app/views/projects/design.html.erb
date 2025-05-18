@@ -32,7 +32,8 @@
     <div class="species-panel bg-white border-end" style="width: 280px; overflow-y: auto;">
       <div class="p-3">
         <div class="species-list">
-          <% @project_species.group_by(&:layer).sort_by { |layer, _| layer }.each do |layer, species| %>
+          <% layer_order = { 'emergent_layer' => 0, 'high_layer' => 1, 'medium_layer' => 2, 'low_layer' => 3 } %>
+          <% @project_species.group_by(&:layer).sort_by { |layer, _| layer_order[layer] }.each do |layer, species| %>
             <div class="layer-group mb-3">
               <div class="layer-header d-flex align-items-center mb-2">
                 <h6 class="mb-0 text-muted"><%= species.first.layer_name.upcase %></h6>
