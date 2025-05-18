@@ -54,10 +54,67 @@ export default class extends Controller {
   }
 
   addSpecies(event) {
+    // <Int, [Species]>
+    const treeRowMap = new Map();
+    for (const index in this.#rowPositions) {
+      treeRowMap.set(parseInt(index), []);
+    }
+
+    for (const species of this.#species.values()) {
+      const y = species.circlePosition.y;
+      const rowNumber = this.#rowPositions.indexOf(y);
+
+      if (rowNumber === -1) {
+        continue;
+      } else {
+        treeRowMap.get(rowNumber).push(species);
+      }
+    }
+
+    // Position of the row that will be used to get the y from the row list.
+    var rowPosition = 0;
+    // Initial x position respecting the margins;
+    var xPosition = this.#marginX;
+    // Last x position respecting the margins;
+    const lastXPosition = this.#marginX + (this.widthValue * this.#pixelsPerMeter);
+
+    let fallback = false;
+    // For each line
+    while (rowPosition < this.#rowPositions.length) {
+      const occupiedXPositions = treeRowMap.get(rowPosition).map(species => species.circlePosition.x);
+      // Reset xPosition for the new row
+      xPosition = this.#marginX;
+
+      // For each x in line
+      while (xPosition <= lastXPosition) {
+        if (occupiedXPositions.includes(xPosition)) {
+          xPosition += 16;
+        } else {
+          // Is there any that overlaps?
+            // No? Set in this position;
+            // Yes? Can I place it here?
+              // Yes? Place!
+              // No? Find where I can place it
+          break;
+        }
+      }
+
+      if (xPosition < lastXPosition) {
+        break;
+      } else {
+        rowPosition += 1;
+      }
+    }
+
+    // If all rows are full, set fallback flag.
+    if (rowPosition >= this.#rowPositions.length && xPosition > lastXPosition) {
+      fallback = true;
+    }
+
     const params = event.params
     const species = new Species({
-      x: this.#marginX + (this.#gridWidth / 2), // Center horizontally
-      y: this.#marginY + this.#pixelsPerMeter, // Place on first tree row
+      x: fallback ? 100 : xPosition, // Center horizontally
+      y: fallback ? 100 : this.#rowPositions[rowPosition], // Place on first tree row
       name: params.name,
       layer: params.layer,
       spacing: params.spacing * this.#pixelsPerMeter,
