@@ -54,6 +54,8 @@ export default class extends Controller {
   }
 
   addSpecies(event) {
+    const params = event.params
+
     // <Int, [Species]>
     const treeRowMap = new Map();
     for (const index in this.#rowPositions) {
@@ -87,15 +89,41 @@ export default class extends Controller {
 
       // For each x in line
       while (xPosition <= lastXPosition) {
+        // Is this position occupied by another species?
         if (occupiedXPositions.includes(xPosition)) {
+          // Yes, this is. Please try 16px from here.
           xPosition += 16;
         } else {
-          // Is there any that overlaps?
-            // No? Set in this position;
-            // Yes? Can I place it here?
-              // Yes? Place!
-              // No? Find where I can place it
-          break;
+          // Nope! This position is free to be used.
+
+          // Oh, is there any species that may overlap with this in this row?
+          const tempSpecies = new Species({
+            x: xPosition,
+            y: this.#rowPositions[rowPosition],
+            name: params.name,
+            layer: params.layer,
+            spacing: params.spacing * this.#pixelsPerMeter,
+            start_crop: params.start,
+            end_crop: params.end
+          });
+          const overlapSpecies = treeRowMap.get(rowPosition).filter(species => this.#haveIntersection(tempSpecies, species));
+          // Yep, there is species that overlaps!
+          if (overlapSpecies.length > 0) {
+            for (const overlappingSpecies of overlapSpecies) {
+              // So, let's calculate if this position is okay for the species distances.
+              const distance = Math.abs(overlappingSpecies.circlePosition.x - xPosition) / this.#pixelsPerMeter;
+              const minSpacing = Math.max(overlappingSpecies.spacing, tempSpecies.spacing);
+
+              // No, it is not. It should try again considering the minSpacing
+              if (distance < minSpacing) {
+                xPosition += minSpacing;
+                console.log(xPosition);
+              }
+            }
+          } else {
+            // Nope! You found your spot, then we can break this while loop.
+            break;
+          }
         }
       }
 
@@ -111,7 +139,6 @@ export default class extends Controller {
       fallback = true;
     }
 
-    const params = event.params
     const species = new Species({
       x: fallback ? 100 : xPosition, // Center horizontally
       y: fallback ? 100 : this.#rowPositions[rowPosition], // Place on first tree row
