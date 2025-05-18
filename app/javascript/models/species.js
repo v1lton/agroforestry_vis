@@ -47,7 +47,6 @@ export class Species {
     return this.group.getClientRect();
   }
 
-
   // MARK: - Shape Representation
 
   /**
@@ -67,7 +66,7 @@ export class Species {
     });
 
     const circle = new Konva.Circle({
-      radius: 10,
+      radius: this.radius,
       fill: this.#color,
       name: "fillShape",
     });
@@ -104,5 +103,23 @@ export class Species {
       low_layer: "red"
     };
     return layerColors[this.layer] || "gray";
+  }
+
+  /**
+   * Gets the radius associated with the species layer and crop period.
+   * @private
+   * @returns {number} The radius for the layer and crop period.
+   */
+  get radius() {
+    return 8;
+  }
+
+  /**
+   * Gets the absolute position of the circle in the shape representation.
+   * @returns {{ x: number, y: number }} The x and y coordinates of the circle.
+   */
+  get circlePosition() {
+    const circle = this.group.findOne(".fillShape");
+    return circle.getAbsolutePosition();
   }
 }

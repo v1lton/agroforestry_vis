@@ -17,35 +17,76 @@
 
   <div class="row mb-4">
     <div class="col-md-6">
-      <%= form.label :width, "Largura", class: "form-label fw-bold" %>
-      <%= form.number_field :width, class: "form-control", placeholder: "Largura em metros" %>
+      <%= form.label :width, "Largura (metros)", class: "form-label fw-bold" %>
+      <%= form.number_field :width, class: "form-control", placeholder: "Largura em metros", min: 0, max: 50 %>
     </div>
     <div class="col-md-6">
-      <%= form.label :height, "Altura", class: "form-label fw-bold" %>
-      <%= form.number_field :height, class: "form-control", placeholder: "Altura em metros" %>
+      <%= form.label :height, "Altura (metros)", class: "form-label fw-bold" %>
+      <%= form.number_field :height, class: "form-control", placeholder: "Altura em metros", min: 0, max: 50 %>
     </div>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :row_spacing, "Espaçamento Entre Linhas (metros)", class: "form-label fw-bold" %>
+    <%= form.number_field :row_spacing, class: "form-control", placeholder: "Espaçamento em metros" , min: 1 %>
   </div>
 
   <div class="mb-4">
     <%= form.label :species_ids, "Selecionar espécies do SAF", class: "form-label fw-bold" %>
     <div class="card">
       <div class="card-body">
-        <div class="row">
-          <%= form.collection_check_boxes :species_ids, @species, :id, :name do |cb| %>
-            <div class="col-md-4 mb-2">
-              <div class="form-check">
-                <%= cb.check_box(class: "form-check-input") %>
-                <%= cb.label(class: "form-check-label") %>
-              </div>
+        <% layer_order = { 'emergent_layer' => 0, 'high_layer' => 1, 'medium_layer' => 2, 'low_layer' => 3 } %>
+        <% @species.group_by(&:layer).sort_by { |layer, _| layer_order[layer] }.each do |layer, species| %>
+          <div class="mb-4">
+            <h4 class="text-dark mb-3"><%= species.first.layer_name.upcase %></h4>
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th style="width: 40px;"></th>
+                    <th>Espécie</th>
+                    <th>Espaçamento (m)</th>
+                    <th>Início Produção (anos)</th>
+                    <th>Fim Produção (anos)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% species.sort_by(&:name).each do |species_item| %>
+                    <tr>
+                      <td>
+                        <div class="form-check">
+                          <%= form.check_box :species_ids, 
+                              { class: "form-check-input", 
+                                multiple: true, 
+                                checked: project.species_ids.include?(species_item.id) }, 
+                              species_item.id, 
+                              nil %>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="d-flex align-items-center" style="width: 12em;">
+                          <div>
+                            <div class="fw-medium"><%= species_item.name %></div>
+                            <div><small class="text-muted"><%= species_item.scientific_name %></small></div>
+                          </div>
+                        </div>
+                      </td>
+                      <td><%= species_item.spacing.to_s.sub(".", ",") %></td>
+                      <td><%= species_item.start_crop_time.to_s.sub(".", ",") %></td>
+                      <td><%= species_item.end_crop_time.to_s.sub(".", ",") %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
             </div>
-          <% end %>
-        </div>
+          </div>
+        <% end %>
       </div>
     </div>
   </div>
 
   <div class="d-flex justify-content-between align-items-center">
-    <%= link_to "Retornar", projects_path, class: "btn btn-outline-secondary" %>
-    <%= form.submit "Criar projeto", class: "btn btn-success btn-lg px-4" %>
+    <div></div>
+    <%= form.submit project.new_record? ? "Criar projeto" : "Editar projeto", class: "btn btn-success btn-lg px-4" %>
   </div>
 <% end %>

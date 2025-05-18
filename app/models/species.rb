@@ -43,4 +43,46 @@ class Species < ApplicationRecord
       layer
     end
   end
+
+  def layer_color
+    case layer
+    when 'emergent_layer'
+      'blue'
+    when 'high_layer'
+      'green'
+    when 'medium_layer'
+      'yellow'
+    when 'low_layer'
+      'red'
+    else
+      'gray'
+    end
+  end
+
+  def production_description
+    start = start_crop_time
+    end_ = end_crop_time
+
+    format_number = ->(num) do
+      (num % 1).zero? ? num.to_i.to_s : num.to_s.sub('.', ',')
+    end
+
+    format_value = ->(value) do
+      if value < 1
+        months = (value * 12).round
+        unit = months == 1 ? "mês" : "meses"
+        "#{months} #{unit}"
+      else
+        years = format_number.call(value)
+        unit = value.to_i == 1 && value % 1 == 0 ? "ano" : "anos"
+        "#{years} #{unit}"
+      end
+    end
+
+    if start == end_
+      "#{format_value.call(start)} | #{spacing.to_s.sub(".", ",")} #{"metros".pluralize}"
+    else
+      "#{format_value.call(start)} - #{format_value.call(end_)} | #{spacing.to_s.sub(".", ",")} #{"metros".pluralize}"
+    end
+  end
 end

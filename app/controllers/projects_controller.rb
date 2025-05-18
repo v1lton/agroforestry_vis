@@ -29,7 +29,7 @@ class ProjectsController < ApplicationController
     respond_to do |format|
       if @project.save
         format.html { redirect_to design_project_path(@project), notice: "Projeto foi criado com sucesso." }
-        format.json { render :show, status: :created, location: @project }
+        format.json { render :design, status: :created, location: @project }
       else
         @species = Species.all
         format.html { render :new, status: :unprocessable_entity }
@@ -46,7 +46,7 @@ class ProjectsController < ApplicationController
   def update
     respond_to do |format|
       if @project.update(project_params)
-        format.html { redirect_to @project, notice: "Projeto foi atualizado com sucesso." }
+        format.html { redirect_to design_project_path(@project), notice: "Projeto foi atualizado com sucesso." }
         format.json { render :show, status: :ok, location: @project }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -73,7 +73,7 @@ class ProjectsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def project_params
-      params.require(:project).permit(:title, :width, :height, species_ids: [])
+      params.require(:project).permit(:title, :width, :height, :row_spacing, species_ids: [])
     end
 
   def set_species
