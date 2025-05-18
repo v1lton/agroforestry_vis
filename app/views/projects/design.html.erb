@@ -1,29 +1,25 @@
 <!-- Main Design Interface -->
-<div class="design-interface" style="height: calc(100vh - 56px); display: flex; flex-direction: column;" data-controller="canvas">
+<div class="design-interface"
+     style="height: calc(100vh - 56px); display: flex; flex-direction: column;"
+     data-controller="canvas"
+     data-canvas-width-value="<%= @project.width %>"
+     data-canvas-height-value="<%= @project.height %>"
+     data-canvas-row-spacing-value=<%= @project.row_spacing %>
+>
   <!-- Top Toolbar -->
   <div class="toolbar bg-white border-bottom py-2 px-3" style="height: 48px;">
     <div class="d-flex justify-content-between align-items-center">
       <div class="d-flex align-items-center">
         <h5 class="mb-0 me-3" style="color: #2E7D32;"><%= @project.title %></h5>
-<!--        <div class="btn-group me-3">-->
-<!--          <button class="btn btn-outline-secondary btn-sm">-->
-<!--            <i class="fas fa-undo"></i>-->
-<!--          </button>-->
-<!--          <button class="btn btn-outline-secondary btn-sm">-->
-<!--            <i class="fas fa-redo"></i>-->
-<!--          </button>-->
-<!--        </div>-->
-<!--        <div class="btn-group">-->
-<!--          <button class="btn btn-outline-secondary btn-sm">-->
-<!--            <i class="fas fa-plus"></i> Zoom In-->
-<!--          </button>-->
-<!--          <button class="btn btn-outline-secondary btn-sm">-->
-<!--            <i class="fas fa-minus"></i> Zoom Out-->
-<!--          </button>-->
-<!--        </div>-->
       </div>
       <div>
-        <button class="btn btn-success btn-sm">
+        <%= link_to edit_project_path(@project),
+                    class: "btn btn-warning btn-sm",
+                    data: { turbo: false },
+                    onclick: "return confirm('Você perderá as alterações atuais no projeto. Deseja continuar?')" do %>
+          <i class="fas fa-edit"></i> Editar
+        <% end %>
+        <button class="btn btn-success btn-sm" data-action="canvas#saveAsImage">
           <i class="fas fa-save"></i> Salvar
         </button>
       </div>
@@ -35,27 +31,30 @@
     <!-- Left Sidebar - Species Panel -->
     <div class="species-panel bg-white border-end" style="width: 280px; overflow-y: auto;">
       <div class="p-3">
-        <h6 class="text-muted mb-3">ESPÉCIES ESCOLHIDAS</h6>
         <div class="species-list">
-          <% @project_species.each do |species| %>
-            <div class="species-item p-2 mb-2 rounded" 
-                 style="cursor: grab; border: 1px solid #e9ecef;"
-                 data-species-id="<%= species.id %>"
-                 data-species-name="<%= species.scientific_name %>"
-                 data-action="click->canvas#addSpecies"
-                 data-canvas-name-param="<%= species.name%>"
-                 data-canvas-layer-param="<%= species.layer %>"
-                 data-canvas-spacing-param="<%= species.spacing %>"
-                 data-canvas-start-param="<%= species.start_crop_time %>"
-                 data-canvas-end-param="<%= species.end_crop_time %>">
-              <div class="d-flex align-items-center">
-<!--                <div class="species-color me-2" -->
-<!--                     style="width: 24px; height: 24px; background-color: #2E7D32; border-radius: 4px;"></div>-->
-                <div>
-                  <div class="fw-medium"><%= species.name %></div>
-                  <small class="text-muted"><%= species.layer_name %></small>
-                </div>
+          <% @project_species.group_by(&:layer).sort_by { |layer, _| layer }.each do |layer, species| %>
+            <div class="layer-group mb-3">
+              <div class="layer-header d-flex align-items-center mb-2">
+                <h6 class="mb-0 text-muted"><%= species.first.layer_name.upcase %></h6>
               </div>
+              <% species.sort_by(&:name).each do |species_item| %>
+                <div class="species-item p-2 mb-2 rounded" 
+                     style="cursor: grab; border: 1px solid #e9ecef;"
+                     data-species-id="<%= species_item.id %>"
+                     data-species-name="<%= species_item.scientific_name %>"
+                     data-action="click->canvas#addSpecies"
+                     data-canvas-name-param="<%= species_item.name%>"
+                     data-canvas-layer-param="<%= species_item.layer %>"
+                     data-canvas-spacing-param="<%= species_item.spacing %>"
+                     data-canvas-start-param="<%= species_item.start_crop_time %>"
+                     data-canvas-end-param="<%= species_item.end_crop_time %>">
+                  <div class="d-flex align-items-center mb-1">
+                    <div class="species-color-indicator" style="width: 10px; height: 10px; border-radius: 50%; background-color: <%= species_item.layer_color %>; margin-right: 8px;"></div>
+                    <div class="fw-medium"><%= species_item.name %></div>
+                  </div>
+                  <small class="text-muted"><%= species_item.production_description %></small>
+                </div>
+              <% end %>
             </div>
           <% end %>
         </div>
@@ -63,38 +62,11 @@
     </div>
 
     <!-- Canvas Area -->
-    <div class="canvas-area flex-grow-1 bg-light" style="position: relative; overflow: auto;">
-      <div class="canvas-container"
-           style="position: absolute; 
-                  top: 50%;
-                  left: 50%;
-                  transform: translate(-50%, -50%);
-                  background-color: white;
-                  box-shadow: 0 0 20px rgba(0,0,0,0.1);
-                  border-radius: 8px;">
-        <div data-canvas-target="canvasContainer">
-        </div>
-<!--        <div class="grid-container"-->
-<!--             style="display: grid;-->
-<!--                    grid-template-columns: repeat(<%#= @project.width %>, 1fr);-->
-<!--                    gap: 1px;-->
-<!--                    background-color: #e9ecef;-->
-<!--                    padding: 1px;-->
-<!--                    border-radius: 8px;">-->
-          <%# (@project.width * @project.height).times do |i| %>
-<!--            <div class="grid-cell"-->
-<!--                 style="width: 40px;-->
-<!--                        height: 40px;-->
-<!--                        background-color: white;-->
-<!--                        border-radius: 2px;-->
-<!--                        position: relative;"-->
-<!--                 data-cell-index="<%#= i %>">-->
-<!--            </div>-->
-          <%# end %>
-<!--        </div>-->
-      </div>
+    <div class="canvas-area flex-grow-1"
+         style="position: relative; overflow: auto;"
+         data-canvas-target="canvasContainer"
+    >
     </div>
-
   </div>
 </div>
 

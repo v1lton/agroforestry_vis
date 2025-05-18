@@ -1,14 +1,14 @@
 Rails.application.routes.draw do
-  resources :projects do
+  resources :projects, only: ["new", "create", "edit", "update"] do
     member do
       get 'design'
     end
   end
 
   # Defines the root path route ("/")
-  root "pages#home"
+  root "projects#new"
 
-  resources :species
+  # resources :species
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
